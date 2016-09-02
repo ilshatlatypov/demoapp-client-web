@@ -8,17 +8,11 @@ export default class DrawerSimpleExample extends React.Component {
   constructor(props) {
     super(props);
     this.state = {open: false};
-    this.handleToggle = this.handleToggle.bind(this);
-    this.handleClose = this.handleClose.bind(this);
   }
 
-  handleToggle() {
-    this.setState({open: !this.state.open});
-  }
+  handleToggle = () => this.setState({open: !this.state.open});
 
-  handleClose() {
-    this.setState({open: false});
-  }
+  handleClose = () => this.setState({open: false});
 
   render() {
     return (

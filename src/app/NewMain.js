@@ -13,12 +13,9 @@ const style = {
 class NewMain extends React.Component {
   constructor() {
     super();
-    this.openDrawer = this.openDrawer.bind(this);
   }
 
-  openDrawer() {
-    this.refs.drawer.handleToggle();
-  }
+  openDrawer = () => this.refs.drawer.handleToggle();
 
   render() {
     return (

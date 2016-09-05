@@ -7,7 +7,11 @@ import AppBarWithMenu from './AppBarWithMenu';
 import DrawerSimpleExample from './DrawerSimpleExample';
 
 const style = {
-  margin: 12,
+  height: 100,
+  width: 100,
+  margin: 20,
+  textAlign: 'center',
+  display: 'inline-block',
 };
 
 class NewMain extends React.Component {
@@ -22,14 +26,10 @@ class NewMain extends React.Component {
       <MuiThemeProvider>
         <div>
         <AppBarWithMenu onLeftIconButtonTouchTap={this.openDrawer} />
-        <MyAwesomeReactComponent style={style} />
-        <RaisedButton label="Primary" primary={true} style={style} />
-        <RaisedButton label="Secondary" secondary={true} style={style} />
-        <RaisedButton label="Disabled" disabled={true} style={style} />
         <DrawerSimpleExample ref="drawer" />
         </div>
-        </MuiThemeProvider>
-      )
+      </MuiThemeProvider>
+    )
   }
 };
 

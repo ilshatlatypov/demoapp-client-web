@@ -1,12 +1,12 @@
 import React from 'react';
 import Paper from 'material-ui/Paper';
+import Avatar from 'material-ui/Avatar';
 import {List, ListItem} from 'material-ui/List';
-import ContentInbox from 'material-ui/svg-icons/content/inbox';
-import ActionGrade from 'material-ui/svg-icons/action/grade';
-import ContentSend from 'material-ui/svg-icons/content/send';
-import ContentDrafts from 'material-ui/svg-icons/content/drafts';
+import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
-import ActionInfo from 'material-ui/svg-icons/action/info';
+import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
+import PersonDefault from 'material-ui/svg-icons/social/person';
+import FileFolder from 'material-ui/svg-icons/file/folder';
 
 const style = {
   width: 1280,
@@ -20,18 +20,37 @@ class PaperWithList extends React.Component {
     return (
       <Paper style={style}>
         <List>
-          <ListItem primaryText="Inbox" leftIcon={<ContentInbox />} />
-          <ListItem primaryText="Starred" leftIcon={<ActionGrade />} />
-          <ListItem primaryText="Sent mail" leftIcon={<ContentSend />} />
-          <ListItem primaryText="Drafts" leftIcon={<ContentDrafts />} />
-          <ListItem primaryText="Inbox" leftIcon={<ContentInbox />} />
+          <Subheader>Recent chats</Subheader>
+          <ListItem
+            primaryText="Brendan Lim"
+            leftAvatar={<Avatar icon={<PersonDefault />}/>}
+            rightIcon={<CommunicationChatBubble />} />
+          <ListItem
+            primaryText="Eric Hoffman"
+            leftAvatar={<Avatar icon={<PersonDefault />}/>}
+            rightIcon={<CommunicationChatBubble />} />
+          <ListItem
+            primaryText="Grace Ng"
+            leftAvatar={<Avatar icon={<PersonDefault />}/>}
+            rightIcon={<CommunicationChatBubble />} />
+          <ListItem
+            primaryText="Kerem Suer"
+            leftAvatar={<Avatar icon={<PersonDefault />}/>}
+            rightIcon={<CommunicationChatBubble />} />
+          <ListItem
+            primaryText="Raquel Parrado"
+            leftAvatar={<Avatar icon={<PersonDefault />}/>}
+            rightIcon={<CommunicationChatBubble />} />
         </List>
         <Divider />
         <List>
-          <ListItem primaryText="All mail" rightIcon={<ActionInfo />} />
-          <ListItem primaryText="Trash" rightIcon={<ActionInfo />} />
-          <ListItem primaryText="Spam" rightIcon={<ActionInfo />} />
-          <ListItem primaryText="Follow up" rightIcon={<ActionInfo />} />
+          <Subheader>Previous chats</Subheader>
+          <ListItem
+            primaryText="Chelsea Otakan"
+            leftAvatar={<Avatar icon={<PersonDefault />}/>} />
+          <ListItem
+            primaryText="James Anderson"
+            leftAvatar={<Avatar icon={<PersonDefault />}/>} />
         </List>
       </Paper>
     )

@@ -9,7 +9,8 @@ import PersonDefault from 'material-ui/svg-icons/social/person';
 import FileFolder from 'material-ui/svg-icons/file/folder';
 
 const style = {
-  width: 1280,
+  maxWidth: 1280,
+  width: "80%",
   marginLeft: 'auto',
   marginRight: 'auto'
 }

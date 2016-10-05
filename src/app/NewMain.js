@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBarWithMenu from './AppBarWithMenu';
+import ToolbarExamplesSimple from './ToolbarExamplesSimple';
 import NavigationDrawer from './NavigationDrawer';
 
 import PaperWithList from './PaperWithList';
@@ -41,6 +42,10 @@ class NewMain extends React.Component {
     this.state = { mainComponentName: "tasks" };
   }
 
+  getChildContext() {
+    return {muiTheme: getMuiTheme(muiTheme)};
+  }
+
   openDrawer = () => this.refs.drawer.handleToggle();
 
   setMainComponent = (newMainComponentName) => {
@@ -59,7 +64,7 @@ class NewMain extends React.Component {
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
         <div>
-          <AppBarWithMenu onLeftIconButtonTouchTap={this.openDrawer} />
+          <ToolbarExamplesSimple />
           <NavigationDrawer ref="drawer" onItemSelected={this.setMainComponent} />
           <div className="container">
             <div className="row">
@@ -75,6 +80,13 @@ class NewMain extends React.Component {
       </MuiThemeProvider>
     )
   }
+};
+
+// <AppBarWithMenu onLeftIconButtonTouchTap={this.openDrawer} />
+// <ToolbarExamplesSimple />
+
+NewMain.childContextTypes = {
+  muiTheme: PropTypes.object.isRequired,
 };
 
 class UserList extends React.Component {

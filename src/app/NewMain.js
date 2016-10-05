@@ -1,7 +1,7 @@
 import React from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBarWithMenu from './AppBarWithMenu';
-import DrawerSimpleExample from './DrawerSimpleExample';
+import NavigationDrawer from './NavigationDrawer';
 import PaperWithList from './PaperWithList';
 import Paper from 'material-ui/Paper';
 
@@ -13,79 +13,120 @@ import ContentDrafts from 'material-ui/svg-icons/content/drafts';
 import Divider from 'material-ui/Divider';
 import ActionInfo from 'material-ui/svg-icons/action/info';
 
-const textPaperStyle = {
-  paper: {
-    padding: 16,
-    width: "100%"
-  },
-  header: {
-    marginTop: 0, 
-    marginBottom: 8, 
-    fontWeight: "400"
-  },
-  paragraph: {
-    margin: 0
-  }
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import ContentContentPaste from 'material-ui/svg-icons/content/content-paste';
+import ActionExitToApp from 'material-ui/svg-icons/action/exit-to-app';
+
+import CircularProgress from 'material-ui/CircularProgress'
+
+import client from './client'
+
+const style = {
+    margin: 0,
+    top: 'auto',
+    right: 20,
+    bottom: 20,
+    left: 'auto',
+    position: 'fixed',
 };
 
 class NewMain extends React.Component {
   constructor() {
     super();
+    this.state = { mainComponentName: "tasks" };
   }
 
   openDrawer = () => this.refs.drawer.handleToggle();
 
+  setMainComponent = (newMainComponentName) => {
+    this.setState({ mainComponentName: newMainComponentName});
+  }
+
   render() {
+    console.log(this.state.mainComponentName);
+    var mainComponent;
+    if (this.state.mainComponentName === "tasks") {
+      mainComponent = <TaskList />;
+    } else if (this.state.mainComponentName === "users") {
+      mainComponent = <UserList />;
+    }
+
     return (
       <MuiThemeProvider>
         <div>
           <AppBarWithMenu onLeftIconButtonTouchTap={this.openDrawer} />
-          <DrawerSimpleExample ref="drawer" />
+          <NavigationDrawer ref="drawer" onItemSelected={this.setMainComponent} />
           <div className="container">
-            <div className="row row-eq-height">
-              <div className="col-lg-3 col-md-6">
-                <Paper style={{width: "100%"}}>
-                  <List>
-                    <ListItem primaryText="Inbox" leftIcon={<ContentInbox />} />
-                    <ListItem primaryText="Starred" leftIcon={<ActionGrade />} />
-                    <ListItem primaryText="Sent mail" leftIcon={<ContentSend />} />
-                    <ListItem primaryText="Drafts" leftIcon={<ContentDrafts />} />
-                    <ListItem primaryText="Inbox" leftIcon={<ContentInbox />} />
-                  </List>
-                </Paper>
-              </div>
-              <div className="col-lg-3 col-md-6">
-                <Paper style={{width: "100%"}}>
-                  <List>
-                    <ListItem primaryText="All mail" rightIcon={<ActionInfo />} />
-                    <ListItem primaryText="Trash" rightIcon={<ActionInfo />} />
-                    <ListItem primaryText="Spam" rightIcon={<ActionInfo />} />
-                    <ListItem primaryText="Follow up" rightIcon={<ActionInfo />} />
-                  </List>
-                </Paper>
-              </div>
-              <div className="col-lg-3 col-md-6">
-                <Paper style={textPaperStyle.paper}>
-                  <h2 style={textPaperStyle.header}>Main Header</h2>
-                  <p style={textPaperStyle.paragraph}>Responsive layouts in material design adapt to any possible screen size. This UI guidance includes a flexible grid that ensures consistency across layouts, breakpoint details about how content reflows on different screens, and a description of how an app can scale from small to extra-large screens.</p>
-                </Paper>
-              </div>
-              <div className="col-lg-3 col-md-6">
-                <Paper style={textPaperStyle.paper}>
-                  <h2 style={textPaperStyle.header}>Главный заголовок</h2>
-                  <p style={textPaperStyle.paragraph}>Наш мозг необычайно пластичен. Не как пластиковая посуда или кукла Барби – в неврологии пластичность означает удивительную способность мозга меняться и адаптироваться практически ко всему, что с нами происходит. В былые времена учёные считали, что когда человек переставал быть ребёнком, его мозг застывал, как глиняный горшок, и оставался в одной форме.</p>
-                </Paper>
-              </div>
-            </div>
             <div className="row">
-              <div className="col-lg-3 col-md-6"><Paper style={{width: "100%", height: 250}} /></div>
-              <div className="col-lg-3 col-md-6"><Paper style={{width: "100%", height: 250}} /></div>
-              <div className="col-lg-3 col-md-6"><Paper style={{width: "100%", height: 250}} /></div>
-              <div className="col-lg-3 col-md-6"><Paper style={{width: "100%", height: 250}} /></div>
+              <div className="col-sm-12">
+                {mainComponent}
+              </div>
             </div>
           </div>
+          <FloatingActionButton secondary={true} style={style}>
+            <ContentAdd />
+          </FloatingActionButton>
         </div>
       </MuiThemeProvider>
+    )
+  }
+};
+
+class UserList extends React.Component {
+  constructor() {
+    super();
+    this.state = {users: [], showResults: false};
+  }
+
+  componentDidMount = () => 
+    client({method: 'GET', path: 'http://localhost:8080/users'}).then(response => {
+      this.setState({users: response.entity._embedded.users, showResults: true});
+    });
+
+  render() {
+      var users = this.state.users.map(user =>
+        <ListItem key={user._links.self.href} primaryText={user.firstname + " " + user.lastname} />
+      );
+      return (
+        <Paper>
+          { this.state.showResults ? <List>{users}</List> : <CircularProgress/> }
+        </Paper>
+      )
+  }
+};
+
+class TaskList extends React.Component {
+  constructor() {
+    super();
+    this.state = {tasks: [], contentMode: 0};
+  }
+
+  componentDidMount = () => 
+    client({method: 'GET', path: 'http://localhost:8080/tasks'}).then(response => {
+      this.setState({tasks: response.entity._embedded.tasks, contentMode: 1});
+    }, errorResponse => {
+      this.setState({tasks: [], contentMode: 2});
+    });
+
+  render() {
+    var tasks = this.state.tasks.map(task =>
+      <ListItem key={task._links.self.href} primaryText={task.title} />
+    );
+    var component;
+    switch(this.state.contentMode) {
+      case 0:
+        component = <CircularProgress/>;
+        break;
+      case 1:
+        component = <List>{tasks}</List>;
+        break;
+      case 2:
+        component = <div>Ошибка</div>;
+        break;
+    }
+    return (
+      <Paper>{component}</Paper>
     )
   }
 };

@@ -9,7 +9,10 @@ import ContentDrafts from 'material-ui/svg-icons/content/drafts';
 import Divider from 'material-ui/Divider';
 import ActionInfo from 'material-ui/svg-icons/action/info';
 
-export default class DrawerSimpleExample extends React.Component {
+import SocialPeople from 'material-ui/svg-icons/social/people';
+import ActionExitToApp from 'material-ui/svg-icons/action/exit-to-app';
+
+export default class NavigationDrawer extends React.Component {
 
   constructor(props) {
     super(props);
@@ -20,6 +23,11 @@ export default class DrawerSimpleExample extends React.Component {
 
   handleClose = () => this.setState({open: false});
 
+  itemSelected = (item) => { 
+    this.handleClose();
+    this.props.onItemSelected(item);
+  }
+
   render() {
     return (
       <Drawer 
@@ -28,18 +36,12 @@ export default class DrawerSimpleExample extends React.Component {
         onRequestChange={(open) => this.setState({open})}
       >
         <List>
-          <ListItem primaryText="Inbox" leftIcon={<ContentInbox />} onTouchTap={this.handleClose} />
-          <ListItem primaryText="Starred" leftIcon={<ActionGrade />} onTouchTap={this.handleClose} />
-          <ListItem primaryText="Sent mail" leftIcon={<ContentSend />} onTouchTap={this.handleClose} />
-          <ListItem primaryText="Drafts" leftIcon={<ContentDrafts />} onTouchTap={this.handleClose} />
-          <ListItem primaryText="Inbox" leftIcon={<ContentInbox />} onTouchTap={this.handleClose} />
+          <ListItem primaryText="Задачи" leftIcon={<ContentInbox />} onTouchTap={() => this.itemSelected("tasks")} />
+          <ListItem primaryText="Сотрудники" leftIcon={<SocialPeople />} onTouchTap={() => this.itemSelected("users")} />
         </List>
         <Divider />
         <List>
-          <ListItem primaryText="All mail" rightIcon={<ActionInfo />} onTouchTap={this.handleClose} />
-          <ListItem primaryText="Trash" rightIcon={<ActionInfo />} onTouchTap={this.handleClose} />
-          <ListItem primaryText="Spam" rightIcon={<ActionInfo />} onTouchTap={this.handleClose} />
-          <ListItem primaryText="Follow up" rightIcon={<ActionInfo />} onTouchTap={this.handleClose} />
+          <ListItem primaryText="Выйти" leftIcon={<ActionExitToApp />} onTouchTap={() => this.itemSelected("exit")} />
         </List>
       </Drawer>
     );

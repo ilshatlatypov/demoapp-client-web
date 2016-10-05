@@ -12,6 +12,19 @@ import client from './client'
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add'
 
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import {
+  blueGrey500, blueGrey700,deepOrangeA200
+} from 'material-ui/styles/colors';
+
+const muiTheme = getMuiTheme({
+  palette: {
+    primary1Color: blueGrey500,
+    primary2Color: blueGrey700,
+    accent1Color: deepOrangeA200,
+  }
+});
+
 const style = {
     margin: 0,
     top: 'auto',
@@ -43,7 +56,7 @@ class NewMain extends React.Component {
     }
 
     return (
-      <MuiThemeProvider>
+      <MuiThemeProvider muiTheme={muiTheme}>
         <div>
           <AppBarWithMenu onLeftIconButtonTouchTap={this.openDrawer} />
           <NavigationDrawer ref="drawer" onItemSelected={this.setMainComponent} />

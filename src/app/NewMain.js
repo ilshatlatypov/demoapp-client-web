@@ -6,6 +6,7 @@ import NavigationDrawer from './NavigationDrawer';
 import PaperWithList from './PaperWithList';
 import Paper from 'material-ui/Paper';
 import CircularProgress from 'material-ui/CircularProgress'
+import Divider from 'material-ui/Divider'
 import {List, ListItem} from 'material-ui/List';
 import client from './client'
 
@@ -83,13 +84,16 @@ class UserList extends React.Component {
   }
 
   componentDidMount = () => 
-    client({method: 'GET', path: 'http://localhost:8080/users'}).then(response => {
+    client({method: 'GET', path: 'http://localhost:8080/users?sort=firstname&sort=lastname'}).then(response => {
       this.setState({users: response.entity._embedded.users, showResults: true});
     });
 
   render() {
       var users = this.state.users.map(user =>
-        <ListItem key={user._links.self.href} primaryText={user.firstname + " " + user.lastname} />
+        <div>
+          <ListItem key={user._links.self.href} primaryText={user.firstname + " " + user.lastname} />
+          <Divider />
+        </div>
       );
       return (
         <Paper>
@@ -106,16 +110,22 @@ class TaskList extends React.Component {
   }
 
   componentDidMount = () => 
-    client({method: 'GET', path: 'http://localhost:8080/tasks'}).then(response => {
+    client({method: 'GET', path: 'http://localhost:8080/tasks?projection=withUser&sort=date'}).then(response => {
       this.setState({tasks: response.entity._embedded.tasks, contentMode: 1});
     }, errorResponse => {
       this.setState({tasks: [], contentMode: 2});
     });
 
   render() {
-    var tasks = this.state.tasks.map(task =>
-      <ListItem key={task._links.self.href} primaryText={task.title} />
-    );
+    var tasks = this.state.tasks.map(task => {
+      var userFullname = (task.user != null ? task.user.firstname + " " + task.user.lastname : "не назначен");
+      return (<div>
+        <ListItem key={task._links.self.href} 
+          primaryText={task.title} 
+          secondaryText={"Исполнитель: " + userFullname}/>
+        <Divider />
+      </div>)
+    });
     var component;
     switch(this.state.contentMode) {
       case 0:

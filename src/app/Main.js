@@ -19,6 +19,8 @@ import {
   blueGrey500, blueGrey700,deepOrangeA200
 } from 'material-ui/styles/colors';
 
+import LoginForm from './LoginForm';
+
 const muiTheme = getMuiTheme({
   palette: {
     primary1Color: blueGrey500,
@@ -39,7 +41,7 @@ const fabStyle = {
 class Main extends React.Component {
   constructor() {
     super();
-    this.state = { mainComponentName: "tasks" };
+    this.state = { mainComponentName: "login" };
   }
 
   getChildContext() {
@@ -55,7 +57,10 @@ class Main extends React.Component {
   render() {
     var title;
     var mainComponent;
-    if (this.state.mainComponentName === "tasks") {
+    if (this.state.mainComponentName === "login") {
+      mainComponent = <LoginForm />;
+      title = "DemoApp"
+    } else if (this.state.mainComponentName === "tasks") {
       mainComponent = <TaskList />;
       title = "Задачи";
     } else if (this.state.mainComponentName === "users") {
@@ -68,13 +73,7 @@ class Main extends React.Component {
         <div>
           <ToolbarExamplesSimple title={title} onMenuIconButtonTouchTap={this.openDrawer} />
           <NavigationDrawer ref="drawer" onItemSelected={this.setMainComponent} />
-          <div className="container">
-            <div className="row">
-              <div className="col-sm-12">
-                {mainComponent}
-              </div>
-            </div>
-          </div>
+          {mainComponent}
           <FloatingActionButton secondary={true} style={fabStyle}>
             <ContentAdd />
           </FloatingActionButton>
@@ -83,6 +82,14 @@ class Main extends React.Component {
     )
   }
 };
+
+          // <div className="container">
+          //   <div className="row">
+          //     <div className="col-sm-12">
+          //       {mainComponent}
+          //     </div>
+          //   </div>
+          // </div>
 
 Main.childContextTypes = {
   muiTheme: PropTypes.object.isRequired,

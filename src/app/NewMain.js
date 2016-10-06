@@ -54,17 +54,20 @@ class NewMain extends React.Component {
 
   render() {
     console.log(this.state.mainComponentName);
+    var title;
     var mainComponent;
     if (this.state.mainComponentName === "tasks") {
       mainComponent = <TaskList />;
+      title = "Задачи";
     } else if (this.state.mainComponentName === "users") {
+      title = "Сотрудники";
       mainComponent = <UserList />;
     }
 
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
         <div>
-          <ToolbarExamplesSimple />
+          <ToolbarExamplesSimple title={title} onMenuIconButtonTouchTap={this.openDrawer} />
           <NavigationDrawer ref="drawer" onItemSelected={this.setMainComponent} />
           <div className="container">
             <div className="row">

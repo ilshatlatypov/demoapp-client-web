@@ -18,6 +18,8 @@ class ToolbarExamplesSimple extends React.Component {
 
   handleChange = (event, index, value) => this.setState({value});
 
+  handleClick = () => console.log('clicked');
+
   render() {
     var appBar = this.context.muiTheme.appBar;
     var iconButtonSize = this.context.muiTheme.button.iconButtonSize;
@@ -58,10 +60,10 @@ class ToolbarExamplesSimple extends React.Component {
       <Toolbar style={styles.root}>
 
         <ToolbarGroup firstChild={true}>
-          <IconButton style={styles.iconButtonLeftStyle} iconStyle={styles.iconButtonIconStyle}>
+          <IconButton style={styles.iconButtonLeftStyle} iconStyle={styles.iconButtonIconStyle} onClick={this.props.onMenuIconButtonTouchTap}>
             <NavigationMenu />
           </IconButton>
-          <h1 style={styles.title}>Title</h1>
+          <h1 style={styles.title}>{this.props.title}</h1>
         </ToolbarGroup>
 
         <ToolbarGroup>

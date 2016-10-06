@@ -1,28 +1,22 @@
 import React, {PropTypes} from 'react';
 import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
-import FontIcon from 'material-ui/FontIcon';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
 import MenuItem from 'material-ui/MenuItem';
-import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
+import {Toolbar, ToolbarGroup} from 'material-ui/Toolbar';
 
 class ToolbarExamplesSimple extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      value: 3,
-    };
   }
-
-  handleChange = (event, index, value) => this.setState({value});
 
   handleClick = () => console.log('clicked');
 
-  render() {
-    var appBar = this.context.muiTheme.appBar;
-    var iconButtonSize = this.context.muiTheme.button.iconButtonSize;
+  getStyles = function(context) {
+    var appBar = context.muiTheme.appBar;
+    var iconButtonSize = context.muiTheme.button.iconButtonSize;
     var styles = {
       root: {
         height: appBar.height,
@@ -56,6 +50,11 @@ class ToolbarExamplesSimple extends React.Component {
       }
     };
 
+    return styles;
+  }
+
+  render() {
+    var styles = this.getStyles(this.context);
     return (
       <Toolbar style={styles.root}>
 
@@ -67,7 +66,7 @@ class ToolbarExamplesSimple extends React.Component {
         </ToolbarGroup>
 
         <ToolbarGroup>
-          <IconMenu style={{ color: this.context.muiTheme.palette.textColor}}
+          <IconMenu
             iconButtonElement={
               <IconButton style={styles.iconButtonRightStyle} iconStyle={styles.iconButtonIconStyle}>
                 <MoreVertIcon />
@@ -81,6 +80,7 @@ class ToolbarExamplesSimple extends React.Component {
             <MenuItem primaryText="Sign out" />
           </IconMenu>
         </ToolbarGroup>
+
       </Toolbar>
     );
   }

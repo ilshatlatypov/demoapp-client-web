@@ -85,9 +85,6 @@ class NewMain extends React.Component {
   }
 };
 
-// <AppBarWithMenu onLeftIconButtonTouchTap={this.openDrawer} />
-// <ToolbarExamplesSimple />
-
 NewMain.childContextTypes = {
   muiTheme: PropTypes.object.isRequired,
 };

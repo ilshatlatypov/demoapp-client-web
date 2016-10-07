@@ -29,14 +29,22 @@ const muiTheme = getMuiTheme({
   }
 });
 
-const fabStyle = {
+const styles = {
+  fab: {
     margin: 0,
     top: 'auto',
     right: 20,
     bottom: 20,
     left: 'auto',
     position: 'fixed',
-};
+  },
+  mainPaper: {
+    width: 1200, 
+    margin: 24, 
+    marginLeft: 'auto',
+    marginRight: 'auto'
+  }
+}
 
 class Main extends React.Component {
   constructor() {
@@ -92,7 +100,7 @@ class Main extends React.Component {
           <ToolbarExamplesSimple title={title} onMenuIconButtonTouchTap={this.openDrawer} />
           <NavigationDrawer ref="drawer" onItemSelected={this.setMainComponent} />
           {mainComponent}
-          <FloatingActionButton secondary={true} style={fabStyle}>
+          <FloatingActionButton secondary={true} style={styles.fab}>
             <ContentAdd />
           </FloatingActionButton>
         </div>
@@ -100,14 +108,6 @@ class Main extends React.Component {
     )
   }
 };
-
-          // <div className="container">
-          //   <div className="row">
-          //     <div className="col-sm-12">
-          //       {mainComponent}
-          //     </div>
-          //   </div>
-          // </div>
 
 Main.childContextTypes = {
   muiTheme: PropTypes.object.isRequired,
@@ -134,7 +134,7 @@ class UserList extends React.Component {
         </div>
       );
       return (
-        <Paper>
+        <Paper style={styles.mainPaper}>
           { this.state.showResults ? <List>{users}</List> : <CircularProgress/> }
         </Paper>
       )
@@ -183,7 +183,7 @@ class TaskList extends React.Component {
         break;
     }
     return (
-      <Paper>{component}</Paper>
+      <Paper style={styles.mainPaper}>{component}</Paper>
     )
   }
 };

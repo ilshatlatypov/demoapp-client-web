@@ -5,6 +5,7 @@ import defaultRequest from 'rest/interceptor/defaultRequest';
 import mime from 'rest/interceptor/mime';
 import uriTemplateInterceptor from './api/uriTemplateInterceptor';
 import errorCode from 'rest/interceptor/errorCode';
+import basicAuth from 'rest/interceptor/basicAuth';
 import baseRegistry from 'rest/mime/registry';
 
 import uriListConverter from './api/uriListConverter';
@@ -19,4 +20,5 @@ export default rest
 	.wrap(mime, { registry: registry })
 	.wrap(uriTemplateInterceptor)
 	.wrap(errorCode)
-	.wrap(defaultRequest, { headers: { 'Accept': 'application/hal+json' }});
+	.wrap(defaultRequest, { headers: { 'Accept': 'application/hal+json' }})
+	.wrap(basicAuth);

@@ -131,6 +131,7 @@ class TaskList extends React.Component {
     client({method: 'GET', path: 'http://localhost:8080/tasks?projection=withUser&sort=date'}).then(response => {
       this.setState({tasks: response.entity._embedded.tasks, contentMode: 1});
     }, errorResponse => {
+      console.log(errorResponse);
       this.setState({tasks: [], contentMode: 2});
     });
 

@@ -25,7 +25,7 @@ const muiTheme = getMuiTheme({
   },
 });
 
-class Main extends Component {
+class OldMain extends Component {
   constructor(props, context) {
     super(props, context);
 
@@ -82,4 +82,4 @@ class Main extends Component {
   }
 }
 
-export default Main;
+export default OldMain;

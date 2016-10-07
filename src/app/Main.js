@@ -41,24 +41,42 @@ const fabStyle = {
 class Main extends React.Component {
   constructor() {
     super();
-    this.state = { mainComponentName: "login" };
+    this.state = { mainComponentName: "login", username: '', password: ''};
   }
 
   getChildContext() {
-    return {muiTheme: getMuiTheme(muiTheme)};
+    return {
+      muiTheme: getMuiTheme(muiTheme), 
+      username: this.state.username, 
+      password: this.state.password
+    };
   }
 
   openDrawer = () => this.refs.drawer.handleToggle();
 
   setMainComponent = (newMainComponentName) => {
-    this.setState({ mainComponentName: newMainComponentName});
+    if (newMainComponentName === "logout") {
+      this.performLogout();
+    } else {
+      this.setState({ mainComponentName: newMainComponentName});
+    }
+  }
+
+  performLogin = (username, password) => {
+    this.setState({ username: username, password: password });
+    this.setMainComponent("tasks");
+  }
+
+  performLogout = () => {
+    this.setState({ username: '', password: '' });
+    this.setMainComponent("login");
   }
 
   render() {
     var title;
     var mainComponent;
     if (this.state.mainComponentName === "login") {
-      mainComponent = <LoginForm />;
+      mainComponent = <LoginForm onLogin={this.performLogin}/>;
       title = "DemoApp"
     } else if (this.state.mainComponentName === "tasks") {
       mainComponent = <TaskList />;
@@ -93,6 +111,8 @@ class Main extends React.Component {
 
 Main.childContextTypes = {
   muiTheme: PropTypes.object.isRequired,
+  username: PropTypes.string,
+  password: PropTypes.string
 };
 
 class UserList extends React.Component {
@@ -102,14 +122,14 @@ class UserList extends React.Component {
   }
 
   componentDidMount = () => 
-    client({method: 'GET', path: 'http://localhost:8080/users?sort=firstname&sort=lastname'}).then(response => {
+    client({method: 'GET', path: 'http://localhost:8080/users?sort=firstname&sort=lastname', username: this.context.username, password: this.context.password}).then(response => {
       this.setState({users: response.entity._embedded.users, showResults: true});
     });
 
   render() {
       var users = this.state.users.map(user =>
-        <div>
-          <ListItem key={user._links.self.href} primaryText={user.firstname + " " + user.lastname} />
+        <div key={user._links.self.href}>
+          <ListItem primaryText={user.firstname + " " + user.lastname} />
           <Divider />
         </div>
       );
@@ -121,6 +141,11 @@ class UserList extends React.Component {
   }
 };
 
+UserList.contextTypes = {
+  username: PropTypes.string,
+  password: PropTypes.string
+};
+
 class TaskList extends React.Component {
   constructor() {
     super();
@@ -128,7 +153,7 @@ class TaskList extends React.Component {
   }
 
   componentDidMount = () => 
-    client({method: 'GET', path: 'http://localhost:8080/tasks?projection=withUser&sort=date'}).then(response => {
+    client({method: 'GET', path: 'http://localhost:8080/tasks?projection=withUser&sort=date', username: this.context.username, password: this.context.password }).then(response => {
       this.setState({tasks: response.entity._embedded.tasks, contentMode: 1});
     }, errorResponse => {
       console.log(errorResponse);
@@ -161,6 +186,11 @@ class TaskList extends React.Component {
       <Paper>{component}</Paper>
     )
   }
+};
+
+TaskList.contextTypes = {
+  username: PropTypes.string,
+  password: PropTypes.string
 };
 
 export default Main;

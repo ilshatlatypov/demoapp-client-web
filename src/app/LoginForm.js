@@ -32,7 +32,7 @@ export default class LoginForm extends React.Component {
     } else {
       client({method: 'GET', path: 'http://localhost:8080/users/search/findByUsername?username=' + username, username: username, password: password, code: 500})
         .then(response => {
-          console.log("logged in");
+          this.props.onLogin(username, password);
         }, errorResponse => {
           if (errorResponse.status.code == 401) {
             this.setState({commonError: 'Неправильный логин или пароль'});

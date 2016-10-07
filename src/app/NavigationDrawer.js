@@ -72,7 +72,7 @@ export default class NavigationDrawer extends React.Component {
         </SelectableList>
         <Divider />
         <List>
-          <ListItem primaryText="Выйти" leftIcon={<ActionExitToApp />} onTouchTap={() => this.itemSelected("exit")} />
+          <ListItem primaryText="Выйти" leftIcon={<ActionExitToApp />} onTouchTap={() => this.itemSelected("logout")} />
         </List>
       </Drawer>
     );

@@ -55,7 +55,7 @@ export default class LoginForm extends React.Component {
         </div>
         { this.state.commonError !== '' ? <div><p style={{ color: red500, textAlign: 'center', marginBottom: 0 }}>{ this.state.commonError }</p></div> : null }
         <div style={{ textAlign: 'center' }}>
-          <RaisedButton label="Войти" secondary={true} style={{ marginTop: 24 }} onClick={this.attemptLogin}/>
+          <RaisedButton label="Войти" secondary={true} style={{ marginTop: 24 }} onClick={this.attemptLogin} id="action_login"/>
         </div>
       </Paper>
     )

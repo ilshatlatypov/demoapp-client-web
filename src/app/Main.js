@@ -173,7 +173,7 @@ class TaskList extends React.Component {
     var component;
     switch(this.state.contentMode) {
       case 0:
-        component = <CircularProgress/>;
+        component = <div style={{textAlign:'center'}}><CircularProgress style={{margin: 24}}/></div>;
         break;
       case 1:
         component = <List>{tasks}</List>;

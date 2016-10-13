@@ -43,15 +43,17 @@ export default class LoginForm extends React.Component {
     }
   }
 
+  handleKeyPress = (e) => { if (e.key === 'Enter') this.attemptLogin(); }
+
   render() {
     return (
       <Paper style={{ marginTop: 24, marginLeft: 'auto', marginRight: 'auto', padding: 24, width: 304 }}>
         <h3 style={{ marginTop: 0, marginBottom: 0 }}>Вход</h3>
         <div>
-          <TextField floatingLabelText="Логин" ref="username" errorText={this.state.usernameError}/>
+          <TextField floatingLabelText="Логин" ref="username" errorText={this.state.usernameError} onKeyPress={this.handleKeyPress}/>
         </div>
         <div>
-          <TextField floatingLabelText="Пароль" type="password" ref="password" errorText={this.state.passwordError}/>
+          <TextField floatingLabelText="Пароль" type="password" ref="password" errorText={this.state.passwordError} onKeyPress={this.handleKeyPress}/>
         </div>
         { this.state.commonError !== '' ? <div><p style={{ color: red500, textAlign: 'center', marginBottom: 0 }}>{ this.state.commonError }</p></div> : null }
         <div style={{ textAlign: 'center' }}>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import DatePicker from 'material-ui/DatePicker';
@@ -6,8 +6,11 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
 import {red500} from 'material-ui/styles/colors';
 import STR from './strings';
+import client from './client'
 
 const styles = {
   fab: {
@@ -20,9 +23,14 @@ const styles = {
   }
 }
 
-export default class DialogCreateUser extends React.Component {
+class DialogCreateUser extends React.Component {
   state = {
     open: false,
+    selectedRole: null,
+    firstnameError: '',
+    lastnameError: '',
+    loginError: '',
+    commonError: ''
   };
 
   handleOpen = () => {
@@ -30,8 +38,66 @@ export default class DialogCreateUser extends React.Component {
   };
 
   handleClose = () => {
-    this.setState({open: false});
+    this.setState({
+      open: false,
+      selectedRole: null,
+      firstnameError: '',
+      lastnameError: '',
+      loginError: '',
+      commonError: ''
+    });
   };
+
+  handleRoleSelectChange = (event, index, value) => this.setState({selectedRole: value});
+
+  attemptCreateUser = () => {
+    this.setState({ firstnameError: '', lastnameError: '', loginError: '', commonError: ''});
+
+    var firstname = this.refs.firstname.getValue();
+    var lastname = this.refs.lastname.getValue();
+    var login = this.refs.login.getValue();
+    var role = this.state.selectedRole;
+
+    var focusField;
+    if (login === '') {
+      this.setState({ loginError: STR.error_required });
+      focusField = this.refs.login;
+    }
+    if (lastname === '') {
+      this.setState({ lastnameError: STR.error_required });
+      focusField = this.refs.lastname;
+    }
+    if (firstname === '') {
+      this.setState({ firstnameError: STR.error_required });
+      focusField = this.refs.firstname;
+    }
+
+    if (focusField) {
+      focusField.focus();
+    } else {
+      var newUser = { firstname: firstname, lastname: lastname, username: login, password: login, role: role };
+      client({method: 'POST', 
+        path: 'http://localhost:8080/users', 
+        headers: {'Content-Type': 'application/json'}, 
+        entity: newUser, 
+        username: this.context.username, 
+        password: this.context.password, 
+        code: 500
+      }).then(response => {
+          this.handleClose();
+          // TODO update parent
+        }, errorResponse => {
+          console.log(errorResponse);
+          if (errorResponse.status.code == 409) {
+            this.setState({commonError: STR.error_login_conflict});
+          } else if (errorResponse.status.code == 0) {
+            this.setState({commonError: STR.error_server_unavailable});
+          }
+        });
+    }
+  }
+
+  handleKeyPress = (e) => { if (e.key === 'Enter') this.attemptCreateUser(); }
 
   render() {
     const actions = [
@@ -43,7 +109,7 @@ export default class DialogCreateUser extends React.Component {
       <FlatButton
         label={STR.action_save}
         primary={true}
-        onTouchTap={this.handleClose}
+        onTouchTap={this.attemptCreateUser}
       />,
     ];
 
@@ -58,16 +124,34 @@ export default class DialogCreateUser extends React.Component {
           modal={false}
           open={this.state.open}
           onRequestClose={this.handleClose}
-          contentStyle={{width: 304}}
-        >
+          contentStyle={{width: 304}}>
           <div>
-            <TextField floatingLabelText={STR.label_firstname} ref="firstname" errorText={this.state.firstnameError} onKeyPress={this.handleKeyPress} autoFocus/>
+            <TextField 
+              ref="firstname" 
+              floatingLabelText={STR.label_firstname} 
+              errorText={this.state.firstnameError} 
+              onKeyPress={this.handleKeyPress} 
+              autoFocus />
           </div>
           <div>
-            <TextField floatingLabelText={STR.label_lastname} type="lastname" errorText={this.state.lastnameError} onKeyPress={this.handleKeyPress}/>
+            <TextField 
+              ref="lastname"
+              floatingLabelText={STR.label_lastname} 
+              errorText={this.state.lastnameError} 
+              onKeyPress={this.handleKeyPress} />
           </div>
           <div>
-            <TextField floatingLabelText={STR.label_login} type="login" errorText={this.state.loginError} onKeyPress={this.handleKeyPress}/>
+            <TextField 
+              ref="login"
+              floatingLabelText={STR.label_login} 
+              errorText={this.state.loginError} 
+              onKeyPress={this.handleKeyPress} />
+          </div>
+          <div>
+            <SelectField ref="role" value={this.state.selectedRole} onChange={this.handleRoleSelectChange} floatingLabelText={STR.label_role}>
+              <MenuItem key={1} value="MANAGER" primaryText="Менеджер" />
+              <MenuItem key={2} value="EMPLOYEE" primaryText="Сотрудник" />
+            </SelectField>
           </div>
           { this.state.commonError !== '' ? <div><p style={{ color: red500, textAlign: 'center', marginBottom: 0 }}>{ this.state.commonError }</p></div> : null }
         </Dialog>
@@ -75,3 +159,10 @@ export default class DialogCreateUser extends React.Component {
     );
   }
 }
+
+DialogCreateUser.contextTypes = {
+  username: PropTypes.string,
+  password: PropTypes.string
+};
+
+export default DialogCreateUser;

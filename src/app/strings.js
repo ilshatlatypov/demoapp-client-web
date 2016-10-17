@@ -2,6 +2,7 @@ export default {
 	error_required: "Обязательное поле",
 	error_invalid_credentials: "Неправильный логин или пароль",
 	error_server_unavailable: "Сервер временно недоступен",
+	error_login_conflict: "Пользователь с таким логином уже зарегистрирован",
 
 	label_login: "Логин",
 	label_password: "Пароль",
@@ -10,6 +11,7 @@ export default {
 	label_employee: "Сотрудник",
 	label_firstname: "Имя",
 	label_lastname: "Фамилия",
+	label_role: "Должность",
 
 	action_login: "Войти",
 	action_logout: "Выйти",

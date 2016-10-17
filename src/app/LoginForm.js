@@ -4,6 +4,7 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import client from './client'
 import {red500} from 'material-ui/styles/colors';
+import STR from './strings';
 
 export default class LoginForm extends React.Component {
   constructor() {
@@ -19,11 +20,11 @@ export default class LoginForm extends React.Component {
 
     var focusField;
     if (password === '') {
-      this.setState({ passwordError: "Обязательное поле" });
+      this.setState({ passwordError: STR.error_required });
       focusField = this.refs.password;
     }
     if (username === '') {
-      this.setState({ usernameError: "Обязательное поле" });
+      this.setState({ usernameError: STR.error_required });
       focusField = this.refs.username;
     }
 
@@ -35,9 +36,9 @@ export default class LoginForm extends React.Component {
           this.props.onLogin(username, password);
         }, errorResponse => {
           if (errorResponse.status.code == 401) {
-            this.setState({commonError: 'Неправильный логин или пароль'});
+            this.setState({commonError: STR.error_invalid_credentials});
           } else if (errorResponse.status.code == 0) {
-            this.setState({commonError: 'Сервер временно недоступен'});
+            this.setState({commonError: STR.error_server_unavailable});
           }
         });
     }
@@ -50,14 +51,14 @@ export default class LoginForm extends React.Component {
       <Paper style={{ marginTop: 24, marginLeft: 'auto', marginRight: 'auto', padding: 24, width: 304 }}>
         <h3 style={{ marginTop: 0, marginBottom: 0 }}>Вход</h3>
         <div>
-          <TextField floatingLabelText="Логин" ref="username" errorText={this.state.usernameError} onKeyPress={this.handleKeyPress}/>
+          <TextField floatingLabelText={ STR.label_login } ref="username" errorText={this.state.usernameError} onKeyPress={this.handleKeyPress}/>
         </div>
         <div>
-          <TextField floatingLabelText="Пароль" type="password" ref="password" errorText={this.state.passwordError} onKeyPress={this.handleKeyPress}/>
+          <TextField floatingLabelText={ STR.label_password } type="password" ref="password" errorText={this.state.passwordError} onKeyPress={this.handleKeyPress}/>
         </div>
         { this.state.commonError !== '' ? <div><p style={{ color: red500, textAlign: 'center', marginBottom: 0 }}>{ this.state.commonError }</p></div> : null }
         <div style={{ textAlign: 'center' }}>
-          <RaisedButton label="Войти" secondary={true} style={{ marginTop: 24 }} onClick={this.attemptLogin} id="action_login"/>
+          <RaisedButton label={ STR.action_login } secondary={true} style={{ marginTop: 24 }} onClick={this.attemptLogin} id="action_login"/>
         </div>
       </Paper>
     )

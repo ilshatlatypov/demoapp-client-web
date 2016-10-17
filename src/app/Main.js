@@ -12,6 +12,7 @@ import LoginForm from './LoginForm';
 
 import TaskList from './TaskList';
 import UserList from './UserList';
+import STR from './strings';
 
 const muiTheme = getMuiTheme({
   palette: {
@@ -63,9 +64,9 @@ class Main extends React.Component {
       title = "DemoApp"
     } else if (this.state.mainComponentName === "tasks") {
       mainComponent = <TaskList />;
-      title = "Задачи";
+      title = STR.title_tasks;
     } else if (this.state.mainComponentName === "users") {
-      title = "Сотрудники";
+      title = STR.title_employees;
       mainComponent = <UserList />;
     }
 

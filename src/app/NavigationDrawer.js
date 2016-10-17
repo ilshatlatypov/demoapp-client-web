@@ -6,6 +6,7 @@ import Divider from 'material-ui/Divider';
 
 import SocialPeople from 'material-ui/svg-icons/social/people';
 import ActionExitToApp from 'material-ui/svg-icons/action/exit-to-app';
+import STR from './strings';
 
 let SelectableList = MakeSelectable(List);
 
@@ -67,8 +68,8 @@ export default class NavigationDrawer extends React.Component {
         onRequestChange={(open) => this.setState({open})}
       >
         <SelectableList defaultValue={0}>
-          <ListItem value={0} primaryText="Задачи" leftIcon={<ContentPaste />} onTouchTap={() => this.itemSelected("tasks")} />
-          <ListItem value={1} primaryText="Сотрудники" leftIcon={<SocialPeople />} onTouchTap={() => this.itemSelected("users")} />
+          <ListItem value={0} primaryText={STR.title_tasks} leftIcon={<ContentPaste />} onTouchTap={() => this.itemSelected("tasks")} />
+          <ListItem value={1} primaryText={STR.title_employees} leftIcon={<SocialPeople />} onTouchTap={() => this.itemSelected("users")} />
         </SelectableList>
         <Divider />
         <List>

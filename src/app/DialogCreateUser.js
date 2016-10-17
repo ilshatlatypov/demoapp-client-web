@@ -7,6 +7,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import {red500} from 'material-ui/styles/colors';
+import STR from './strings';
 
 const styles = {
   fab: {
@@ -35,12 +36,12 @@ export default class DialogCreateUser extends React.Component {
   render() {
     const actions = [
       <FlatButton
-        label="Отмена"
+        label={STR.action_cancel}
         primary={true}
         onTouchTap={this.handleClose}
       />,
       <FlatButton
-        label="Сохранить"
+        label={STR.action_save}
         primary={true}
         onTouchTap={this.handleClose}
       />,
@@ -52,7 +53,7 @@ export default class DialogCreateUser extends React.Component {
           <ContentAdd />
         </FloatingActionButton>
         <Dialog
-          title="Новый сотрудник"
+          title={STR.title_new_employee}
           actions={actions}
           modal={false}
           open={this.state.open}
@@ -60,13 +61,13 @@ export default class DialogCreateUser extends React.Component {
           contentStyle={{width: 304}}
         >
           <div>
-            <TextField floatingLabelText="Имя" ref="firstname" errorText={this.state.firstnameError} onKeyPress={this.handleKeyPress} autoFocus/>
+            <TextField floatingLabelText={STR.label_firstname} ref="firstname" errorText={this.state.firstnameError} onKeyPress={this.handleKeyPress} autoFocus/>
           </div>
           <div>
-            <TextField floatingLabelText="Фамилия" type="lastname" errorText={this.state.lastnameError} onKeyPress={this.handleKeyPress}/>
+            <TextField floatingLabelText={STR.label_lastname} type="lastname" errorText={this.state.lastnameError} onKeyPress={this.handleKeyPress}/>
           </div>
           <div>
-            <TextField floatingLabelText="Логин" type="login" errorText={this.state.loginError} onKeyPress={this.handleKeyPress}/>
+            <TextField floatingLabelText={STR.label_login} type="login" errorText={this.state.loginError} onKeyPress={this.handleKeyPress}/>
           </div>
           { this.state.commonError !== '' ? <div><p style={{ color: red500, textAlign: 'center', marginBottom: 0 }}>{ this.state.commonError }</p></div> : null }
         </Dialog>

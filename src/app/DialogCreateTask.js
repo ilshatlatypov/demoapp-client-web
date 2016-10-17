@@ -9,6 +9,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import {red500} from 'material-ui/styles/colors';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import STR from './strings';
 
 const styles = {
   fab: {
@@ -40,7 +41,7 @@ export default class DialogCreateTask extends React.Component {
   render() {
     const actions = [
       <FlatButton
-        label="Отмена"
+        label={STR.action_cancel}
         primary={true}
         onTouchTap={this.handleClose}
       />,
@@ -57,7 +58,7 @@ export default class DialogCreateTask extends React.Component {
           <ContentAdd />
         </FloatingActionButton>
         <Dialog
-          title="Новая задача"
+          title={STR.title_new_task}
           actions={actions}
           modal={false}
           open={this.state.open}
@@ -65,13 +66,13 @@ export default class DialogCreateTask extends React.Component {
           contentStyle={{width: 304}}
         >
           <div>
-            <TextField floatingLabelText="Название" ref="title" errorText={this.state.titleError} onKeyPress={this.handleKeyPress} autoFocus/>
+            <TextField floatingLabelText={STR.label_name} ref="title" errorText={this.state.titleError} onKeyPress={this.handleKeyPress} autoFocus/>
           </div>
           <div>
-            <DatePicker floatingLabelText="Дата" locale="ru" DateTimeFormat={global.Intl.DateTimeFormat} cancelLabel="Отмена"/>
+            <DatePicker floatingLabelText={STR.label_date} locale="ru" DateTimeFormat={global.Intl.DateTimeFormat} cancelLabel={STR.action_cancel}/>
           </div>
           <div>
-            <SelectField value={this.state.selectedUser} onChange={this.handleUserSelectChange} floatingLabelText="Сотрудник">
+            <SelectField value={this.state.selectedUser} onChange={this.handleUserSelectChange} floatingLabelText={STR.label_employee}>
               <MenuItem key={1} value={1} primaryText="Never" />
               <MenuItem key={2} value={2} primaryText="Every Night" />
               <MenuItem key={3} value={3} primaryText="Weeknights" />

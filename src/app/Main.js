@@ -4,13 +4,6 @@ import AppBarWithMenu from './AppBarWithMenu';
 import ToolbarExamplesSimple from './ToolbarExamplesSimple';
 import NavigationDrawer from './NavigationDrawer';
 
-import PaperWithList from './PaperWithList';
-import Paper from 'material-ui/Paper';
-import CircularProgress from 'material-ui/CircularProgress'
-import Divider from 'material-ui/Divider'
-import {List, ListItem} from 'material-ui/List';
-import client from './client'
-
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add'
 
@@ -20,6 +13,9 @@ import {
 } from 'material-ui/styles/colors';
 
 import LoginForm from './LoginForm';
+
+import TaskList from './TaskList';
+import UserList from './UserList';
 
 const muiTheme = getMuiTheme({
   palette: {
@@ -111,84 +107,6 @@ class Main extends React.Component {
 
 Main.childContextTypes = {
   muiTheme: PropTypes.object.isRequired,
-  username: PropTypes.string,
-  password: PropTypes.string
-};
-
-class UserList extends React.Component {
-  constructor() {
-    super();
-    this.state = {users: [], showResults: false};
-  }
-
-  componentDidMount = () => 
-    client({method: 'GET', path: 'http://localhost:8080/users?sort=firstname&sort=lastname', username: this.context.username, password: this.context.password}).then(response => {
-      this.setState({users: response.entity._embedded.users, showResults: true});
-    });
-
-  render() {
-      var users = this.state.users.map(user =>
-        <div key={user._links.self.href}>
-          <ListItem primaryText={user.firstname + " " + user.lastname} />
-          <Divider />
-        </div>
-      );
-      return (
-        <Paper style={styles.mainPaper}>
-          { this.state.showResults ? <List>{users}</List> : <CircularProgress/> }
-        </Paper>
-      )
-  }
-};
-
-UserList.contextTypes = {
-  username: PropTypes.string,
-  password: PropTypes.string
-};
-
-class TaskList extends React.Component {
-  constructor() {
-    super();
-    this.state = {tasks: [], contentMode: 0};
-  }
-
-  componentDidMount = () => 
-    client({method: 'GET', path: 'http://localhost:8080/tasks?projection=withUser&sort=date', username: this.context.username, password: this.context.password }).then(response => {
-      this.setState({tasks: response.entity._embedded.tasks, contentMode: 1});
-    }, errorResponse => {
-      console.log(errorResponse);
-      this.setState({tasks: [], contentMode: 2});
-    });
-
-  render() {
-    var tasks = this.state.tasks.map(task => {
-      var userFullname = (task.user != null ? task.user.firstname + " " + task.user.lastname : "не назначен");
-      return (<div key={task._links.self.href} >
-        <ListItem 
-          primaryText={task.title} 
-          secondaryText={"Исполнитель: " + userFullname}/>
-        <Divider />
-      </div>)
-    });
-    var component;
-    switch(this.state.contentMode) {
-      case 0:
-        component = <div style={{textAlign:'center'}}><CircularProgress style={{margin: 24}}/></div>;
-        break;
-      case 1:
-        component = <List>{tasks}</List>;
-        break;
-      case 2:
-        component = <div>Ошибка</div>;
-        break;
-    }
-    return (
-      <Paper style={styles.mainPaper}>{component}</Paper>
-    )
-  }
-};
-
-TaskList.contextTypes = {
   username: PropTypes.string,
   password: PropTypes.string
 };

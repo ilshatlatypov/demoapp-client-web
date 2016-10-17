@@ -3,10 +3,6 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBarWithMenu from './AppBarWithMenu';
 import ToolbarExamplesSimple from './ToolbarExamplesSimple';
 import NavigationDrawer from './NavigationDrawer';
-
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add'
-
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {
   blueGrey500, blueGrey700,deepOrangeA200
@@ -24,23 +20,6 @@ const muiTheme = getMuiTheme({
     accent1Color: deepOrangeA200,
   }
 });
-
-const styles = {
-  fab: {
-    margin: 0,
-    top: 'auto',
-    right: 20,
-    bottom: 20,
-    left: 'auto',
-    position: 'fixed',
-  },
-  mainPaper: {
-    width: 1200, 
-    margin: 24, 
-    marginLeft: 'auto',
-    marginRight: 'auto'
-  }
-}
 
 class Main extends React.Component {
   constructor() {
@@ -96,9 +75,6 @@ class Main extends React.Component {
           <ToolbarExamplesSimple title={title} onMenuIconButtonTouchTap={this.openDrawer} />
           <NavigationDrawer ref="drawer" onItemSelected={this.setMainComponent} />
           {mainComponent}
-          <FloatingActionButton secondary={true} style={styles.fab}>
-            <ContentAdd />
-          </FloatingActionButton>
         </div>
       </MuiThemeProvider>
     )

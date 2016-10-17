@@ -4,6 +4,8 @@ import {List, ListItem} from 'material-ui/List';
 import Paper from 'material-ui/Paper';
 import CircularProgress from 'material-ui/CircularProgress'
 import client from './client';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 
 const styles = {
   fab: {
@@ -59,7 +61,12 @@ class TaskList extends React.Component {
         break;
     }
     return (
-      <Paper style={styles.mainPaper}>{component}</Paper>
+      <div>
+        <Paper style={styles.mainPaper}>{component}</Paper>
+        <FloatingActionButton secondary={true} style={styles.fab}>
+          <ContentAdd />
+        </FloatingActionButton>
+      </div>
     )
   }
 };

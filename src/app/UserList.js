@@ -5,6 +5,7 @@ import Paper from 'material-ui/Paper';
 import CircularProgress from 'material-ui/CircularProgress'
 import client from './client';
 import DialogCreateUser from './DialogCreateUser'
+import SnackbarUserCreate from './SnackbarUserCreated'
 
 const styles = {
   mainPaper: {
@@ -18,13 +19,24 @@ const styles = {
 class UserList extends React.Component {
   constructor() {
     super();
-    this.state = {users: [], showResults: false};
+    this.state = {users: [], showResults: false, showSnackbar: false};
   }
 
-  componentDidMount = () => 
-    client({method: 'GET', path: 'http://localhost:8080/users?sort=firstname&sort=lastname', username: this.context.username, password: this.context.password}).then(response => {
+  componentDidMount = () => this.refresh();
+
+  refresh = () => {
+    this.setState({showResults: false});
+    client({method: 'GET', path: 'http://localhost:8080/users?sort=firstname&sort=lastname', 
+      username: this.context.username, password: this.context.password})
+    .then(response => {
       this.setState({users: response.entity._embedded.users, showResults: true});
     });
+  }
+
+  handleUserCreate = () => {
+    this.refs.snackbar.handleRequestOpen();
+    this.refresh();
+  }
 
   render() {
       var users = this.state.users.map(user =>
@@ -38,7 +50,8 @@ class UserList extends React.Component {
           <Paper style={styles.mainPaper}>
             { this.state.showResults ? <List>{users}</List> : <CircularProgress/> }
           </Paper>
-          <DialogCreateUser/>
+          <DialogCreateUser onCreate={this.handleUserCreate}/>
+          <SnackbarUserCreate ref="snackbar"/>
         </div>
       )
   }

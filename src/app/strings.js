@@ -2,7 +2,9 @@ export default {
 	error_required: "Обязательное поле",
 	error_invalid_credentials: "Неправильный логин или пароль",
 	error_server_unavailable: "Сервер временно недоступен",
-	error_login_conflict: "Пользователь с таким логином уже зарегистрирован",
+	error_login_conflict: "Логин уже используется",
+	error_latin_letters_only: "Только латинские символы",
+	error_unknown: "Неизвестная ошибка",
 
 	label_login: "Логин",
 	label_password: "Пароль",
@@ -21,5 +23,7 @@ export default {
 	title_new_task: "Новая задача",
 	title_new_employee: "Новый сотрудник",
 	title_tasks: "Задачи",
-	title_employees: "Сотрудники"
+	title_employees: "Сотрудники",
+
+	prompt_employee_added: "Сотрудник добавлен",
 }

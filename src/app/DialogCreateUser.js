@@ -44,6 +44,7 @@ class DialogCreateUser extends React.Component {
       firstnameError: '',
       lastnameError: '',
       loginError: '',
+      roleError: '',
       commonError: ''
     });
   };
@@ -51,7 +52,7 @@ class DialogCreateUser extends React.Component {
   handleRoleSelectChange = (event, index, value) => this.setState({selectedRole: value});
 
   attemptCreateUser = () => {
-    this.setState({ firstnameError: '', lastnameError: '', loginError: '', commonError: ''});
+    this.setState({ firstnameError: '', lastnameError: '', loginError: '', roleError: '', commonError: ''});
 
     var firstname = this.refs.firstname.getValue();
     var lastname = this.refs.lastname.getValue();
@@ -59,8 +60,15 @@ class DialogCreateUser extends React.Component {
     var role = this.state.selectedRole;
 
     var focusField;
+    if (role === null) {
+      this.setState({ roleError: STR.error_required });
+      focusField = this.refs.role;
+    }
     if (login === '') {
       this.setState({ loginError: STR.error_required });
+      focusField = this.refs.login;
+    } else if (!/^[a-zA-Z]+$/.test(login)) {
+      this.setState({ loginError: STR.error_latin_letters_only });
       focusField = this.refs.login;
     }
     if (lastname === '') {
@@ -76,6 +84,7 @@ class DialogCreateUser extends React.Component {
       focusField.focus();
     } else {
       var newUser = { firstname: firstname, lastname: lastname, username: login, password: login, role: role };
+
       client({method: 'POST', 
         path: 'http://localhost:8080/users', 
         headers: {'Content-Type': 'application/json'}, 
@@ -85,11 +94,13 @@ class DialogCreateUser extends React.Component {
         code: 500
       }).then(response => {
           this.handleClose();
-          // TODO update parent
+          this.props.onCreate();
         }, errorResponse => {
-          console.log(errorResponse);
-          if (errorResponse.status.code == 409) {
-            this.setState({commonError: STR.error_login_conflict});
+          if (errorResponse.status.code == 400) {
+            var error = errorResponse.entity.errors[0];
+            if (error.property === 'username' && error.message === 'must be unique') {
+              this.setState({ loginError: STR.error_login_conflict});
+            }
           } else if (errorResponse.status.code == 0) {
             this.setState({commonError: STR.error_server_unavailable});
           }
@@ -148,7 +159,12 @@ class DialogCreateUser extends React.Component {
               onKeyPress={this.handleKeyPress} />
           </div>
           <div>
-            <SelectField ref="role" value={this.state.selectedRole} onChange={this.handleRoleSelectChange} floatingLabelText={STR.label_role}>
+            <SelectField 
+              ref="role" 
+              floatingLabelText={STR.label_role}
+              errorText={this.state.roleError}
+              value={this.state.selectedRole}
+              onChange={this.handleRoleSelectChange} >
               <MenuItem key={1} value="MANAGER" primaryText="Менеджер" />
               <MenuItem key={2} value="EMPLOYEE" primaryText="Сотрудник" />
             </SelectField>

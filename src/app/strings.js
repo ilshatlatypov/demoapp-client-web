@@ -20,6 +20,7 @@ export default {
 	action_cancel: "Отмена",
 	action_save: "Сохранить",
 
+  title_login: "Вход",
 	title_new_task: "Новая задача",
 	title_new_employee: "Новый сотрудник",
 	title_tasks: "Задачи",

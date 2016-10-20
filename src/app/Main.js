@@ -1,17 +1,11 @@
 import React, {PropTypes} from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import AppBarWithMenu from './AppBarWithMenu';
 import ToolbarExamplesSimple from './ToolbarExamplesSimple';
 import NavigationDrawer from './NavigationDrawer';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {
   blueGrey500, blueGrey700,deepOrangeA200
 } from 'material-ui/styles/colors';
-
-import LoginForm from './LoginForm';
-
-import TaskList from './TaskList';
-import UserList from './UserList';
 import STR from './strings';
 import { Link } from 'react-router'
 
@@ -31,8 +25,8 @@ class Main extends React.Component {
 
   getChildContext() {
     return {
-      muiTheme: getMuiTheme(muiTheme), 
-      username: this.state.username, 
+      muiTheme: getMuiTheme(muiTheme),
+      username: this.state.username,
       password: this.state.password
     };
   }

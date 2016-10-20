@@ -51,10 +51,10 @@ export default class LoginForm extends React.Component {
       <Paper style={{ marginTop: 24, marginLeft: 'auto', marginRight: 'auto', padding: 24, width: 304 }}>
         <h3 style={{ marginTop: 0, marginBottom: 0 }}>Вход</h3>
         <div>
-          <TextField floatingLabelText={ STR.label_login } ref="username" errorText={this.state.usernameError} onKeyPress={this.handleKeyPress}/>
+          <TextField floatingLabelText={ STR.label_login } ref="username" errorText={this.state.usernameError} onKeyPress={this.handleKeyPress} value="man"/>
         </div>
         <div>
-          <TextField floatingLabelText={ STR.label_password } type="password" ref="password" errorText={this.state.passwordError} onKeyPress={this.handleKeyPress}/>
+          <TextField floatingLabelText={ STR.label_password } type="password" ref="password" errorText={this.state.passwordError} onKeyPress={this.handleKeyPress} value="man"/>
         </div>
         { this.state.commonError !== '' ? <div><p style={{ color: red500, textAlign: 'center', marginBottom: 0 }}>{ this.state.commonError }</p></div> : null }
         <div style={{ textAlign: 'center' }}>

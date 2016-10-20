@@ -57,11 +57,16 @@ export default class NavigationDrawer extends React.Component {
 
   handleClose = () => this.setState({open: false});
 
+  handleLogout = () => {
+    window.localStorage.clear()
+    this.handleClose()
+  }
+
   render() {
     return (
-      <Drawer 
-        docked={false} 
-        open={this.state.open} 
+      <Drawer
+        docked={false}
+        open={this.state.open}
         onRequestChange={(open) => this.setState({open})}
       >
         <SelectableList defaultValue={0}>
@@ -70,7 +75,7 @@ export default class NavigationDrawer extends React.Component {
         </SelectableList>
         <Divider />
         <List>
-          <ListItem containerElement={<Link to="/login" />} primaryText="Выйти" leftIcon={<ActionExitToApp />} onTouchTap={this.handleClose} />
+          <ListItem containerElement={<Link to="/login" />} primaryText="Выйти" leftIcon={<ActionExitToApp />} onTouchTap={this.handleLogout} />
         </List>
       </Drawer>
     );

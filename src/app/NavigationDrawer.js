@@ -8,6 +8,8 @@ import SocialPeople from 'material-ui/svg-icons/social/people';
 import ActionExitToApp from 'material-ui/svg-icons/action/exit-to-app';
 import STR from './strings';
 
+import { Link } from 'react-router'
+
 let SelectableList = MakeSelectable(List);
 
 function wrapState(ComposedComponent) {
@@ -55,11 +57,6 @@ export default class NavigationDrawer extends React.Component {
 
   handleClose = () => this.setState({open: false});
 
-  itemSelected = (item) => { 
-    this.handleClose();
-    this.props.onItemSelected(item);
-  }
-
   render() {
     return (
       <Drawer 
@@ -68,12 +65,12 @@ export default class NavigationDrawer extends React.Component {
         onRequestChange={(open) => this.setState({open})}
       >
         <SelectableList defaultValue={0}>
-          <ListItem value={0} primaryText={STR.title_tasks} leftIcon={<ContentPaste />} onTouchTap={() => this.itemSelected("tasks")} />
-          <ListItem value={1} primaryText={STR.title_employees} leftIcon={<SocialPeople />} onTouchTap={() => this.itemSelected("users")} />
+          <ListItem containerElement={<Link to="/tasks" />} value={0} primaryText={STR.title_tasks} leftIcon={<ContentPaste />} onTouchTap={this.handleClose} />
+          <ListItem containerElement={<Link to="/employees" />} value={1} primaryText={STR.title_employees} leftIcon={<SocialPeople />} onTouchTap={this.handleClose} />
         </SelectableList>
         <Divider />
         <List>
-          <ListItem primaryText="Выйти" leftIcon={<ActionExitToApp />} onTouchTap={() => this.itemSelected("logout")} />
+          <ListItem containerElement={<Link to="/login" />} primaryText="Выйти" leftIcon={<ActionExitToApp />} onTouchTap={this.handleClose} />
         </List>
       </Drawer>
     );

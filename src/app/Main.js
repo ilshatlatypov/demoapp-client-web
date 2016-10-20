@@ -13,6 +13,7 @@ import LoginForm from './LoginForm';
 import TaskList from './TaskList';
 import UserList from './UserList';
 import STR from './strings';
+import { Link } from 'react-router'
 
 const muiTheme = getMuiTheme({
   palette: {
@@ -25,7 +26,7 @@ const muiTheme = getMuiTheme({
 class Main extends React.Component {
   constructor() {
     super();
-    this.state = { mainComponentName: "login", username: '', password: ''};
+    this.state = { mainComponentName: "login", username: 'man', password: 'man'};
   }
 
   getChildContext() {
@@ -38,44 +39,25 @@ class Main extends React.Component {
 
   openDrawer = () => this.refs.drawer.handleToggle();
 
-  setMainComponent = (newMainComponentName) => {
-    if (newMainComponentName === "logout") {
-      this.performLogout();
-    } else {
-      this.setState({ mainComponentName: newMainComponentName});
-    }
-  }
+  // performLogin = (username, password) => {
+  //   this.setState({ username: username, password: password });
+  //   this.setMainComponent("tasks");
+  // }
 
-  performLogin = (username, password) => {
-    this.setState({ username: username, password: password });
-    this.setMainComponent("tasks");
-  }
-
-  performLogout = () => {
-    this.setState({ username: '', password: '' });
-    this.setMainComponent("login");
-  }
+  // performLogout = () => {
+  //   this.setState({ username: '', password: '' });
+  //   this.setMainComponent("login");
+  // }
 
   render() {
-    var title;
-    var mainComponent;
-    if (this.state.mainComponentName === "login") {
-      mainComponent = <LoginForm onLogin={this.performLogin}/>;
-      title = "DemoApp"
-    } else if (this.state.mainComponentName === "tasks") {
-      mainComponent = <TaskList />;
-      title = STR.title_tasks;
-    } else if (this.state.mainComponentName === "users") {
-      title = STR.title_employees;
-      mainComponent = <UserList />;
-    }
+    var title = "DemoApp";
 
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
         <div>
           <ToolbarExamplesSimple title={title} onMenuIconButtonTouchTap={this.openDrawer} />
-          <NavigationDrawer ref="drawer" onItemSelected={this.setMainComponent} />
-          {mainComponent}
+          <NavigationDrawer ref="drawer" />
+          {this.props.children}
         </div>
       </MuiThemeProvider>
     )

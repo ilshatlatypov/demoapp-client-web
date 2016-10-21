@@ -4,6 +4,7 @@ import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
+import CircularProgress from 'material-ui/CircularProgress';
 import {red500} from 'material-ui/styles/colors';
 
 import { hashHistory } from 'react-router'
@@ -11,16 +12,30 @@ import { hashHistory } from 'react-router'
 import client from '../client'
 import STR from '../strings'
 
+const progressDiameter = 70
+const loginCardPadding = 24
+const loginCardWidth = 256 + loginCardPadding * 2
+
 var styles = {
-  paper: { marginTop: 24, marginLeft: 'auto', marginRight: 'auto', padding: 24, width: 304 },
-  header: { marginTop: 0, marginBottom: 0 }
+  loginCard: { marginTop: 24, marginLeft: 'auto', marginRight: 'auto', padding: loginCardPadding, width: loginCardWidth, position: 'relative' },
+  header: { marginTop: 0, marginBottom: 0 },
+  progress: { zIndex: 2, backgroundColor: 'rgba(255,255,255,0.5)', position: 'absolute' }
 }
 
 class Login extends React.Component {
 
   constructor() {
     super()
-    this.state = { username: '', password: '', usernameError : '', passwordError : '', commonError: '' }
+    this.state = {
+      username: '',
+      password: '',
+      usernameError : '',
+      passwordError : '',
+      commonError: '',
+      requestInProgress: false,
+      progressPaddingHor: 0,
+      progressPaddingVert: 0
+    }
   }
 
   handleUsernameChange = (e) => this.setState({username: e.target.value})
@@ -48,8 +63,9 @@ class Login extends React.Component {
     }
 
     if (focusField) {
-      focusField.focus()
+      //focusField.focus()
     } else {
+      this.setState({requestInProgress: true})
       client({
         method: 'GET',
         path: 'http://localhost:8080/users/search/findByUsername?username=' + username,
@@ -66,16 +82,38 @@ class Login extends React.Component {
           } else if (code == 0) {
             this.setState({commonError: STR.error_server_unavailable})
           }
+          this.setState({requestInProgress: false})
         }
       )
     }
   }
 
+  componentDidMount = () => {
+    var loginCardHeight = document.getElementById('login_card').clientHeight
+
+    var width = loginCardWidth - loginCardPadding * 2
+    var height = loginCardHeight - loginCardPadding * 2
+
+    var progressPaddingHor = (width - progressDiameter) / 2
+    var progressPaddingVert = (height - progressDiameter) / 2
+
+    this.setState({
+      progressPaddingHor: progressPaddingHor,
+      progressPaddingVert: progressPaddingVert
+    })
+  }
+
   render() {
+    styles.progress.paddingLeft = this.state.progressPaddingHor
+    styles.progress.paddingRight = this.state.progressPaddingHor
+    styles.progress.paddingTop = this.state.progressPaddingVert
+    styles.progress.paddingBottom = this.state.progressPaddingVert
+
     return (
       <div>
         <AppBar title="Login" showMenuIconButton={false}/>
-        <Paper style={styles.paper}>
+        <Paper style={styles.loginCard} id="login_card">
+          { this.state.requestInProgress ? <div style={styles.progress}><CircularProgress /></div> : null }
           <h3 style={styles.header}>{STR.title_login}</h3>
           <div>
             <TextField
@@ -84,6 +122,7 @@ class Login extends React.Component {
               errorText={this.state.usernameError}
               onChange={this.handleUsernameChange}
               onKeyPress={this.handleKeyPress}
+              disabled={this.state.requestInProgress}
               ref="username"
             />
           </div>
@@ -95,6 +134,7 @@ class Login extends React.Component {
               errorText={this.state.passwordError}
               onChange={this.handlePasswordChange}
               onKeyPress={this.handleKeyPress}
+              disabled={this.state.requestInProgress}
               ref="password"
             />
           </div>
@@ -106,6 +146,7 @@ class Login extends React.Component {
               secondary={true}
               style={{ marginTop: 24 }}
               onClick={this.attemptLogin}
+              disabled={this.state.requestInProgress}
             />
           </div>
         </Paper>

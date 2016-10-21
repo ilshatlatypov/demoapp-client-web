@@ -6,7 +6,7 @@ export default {
 	error_latin_letters_only: "Только латинские символы",
 	error_unknown: "Неизвестная ошибка",
 
-	label_login: "Логин",
+	label_username: "Логин",
 	label_password: "Пароль",
 	label_name: "Название",
 	label_date: "Дата",
@@ -20,7 +20,7 @@ export default {
 	action_cancel: "Отмена",
 	action_save: "Сохранить",
 
-  title_login: "Вход",
+ 	title_login: "Вход",
 	title_new_task: "Новая задача",
 	title_new_employee: "Новый сотрудник",
 	title_tasks: "Задачи",

@@ -16,26 +16,41 @@ var styles = {
   header: { marginTop: 0, marginBottom: 0 }
 }
 
-var defaultState = { usernameError : '', passwordError : '', commonError: '' }
+var initialState = { 
+  username: '', 
+  password: '', 
+  usernameError : '', 
+  passwordError : '', 
+  commonError: '' 
+}
 
 class Login extends React.Component {
+
   constructor() {
     super()
-    this.state = defaultState
+    this.state = { username: '', password: '', usernameError : '', passwordError : '', commonError: '' }
   }
 
-  attemptLogin = () => {
-    this.setState(defaultState)
+  handleUsernameChange = (e) => this.setState({username: e.target.value})
 
-    var username = this.refs.username.getValue()
-    var password = this.refs.password.getValue()
+  handlePasswordChange = (e) => this.setState({password: e.target.value})
+
+  handleKeyPress = (e) => { if (e.key === 'Enter') this.attemptLogin() }
+
+  clearErrors = () => this.setState({ usernameError : '', passwordError : '', commonError: '' })
+
+  attemptLogin = () => {
+    this.clearErrors()
+
+    var username = this.state.username.trim()
+    var password = this.state.password.trim()
 
     var focusField
-    if (password === '') {
+    if (!password) {
       this.setState({ passwordError: STR.error_required })
       focusField = this.refs.password
     }
-    if (username === '') {
+    if (!username) {
       this.setState({ usernameError: STR.error_required })
       focusField = this.refs.username
     }
@@ -64,8 +79,6 @@ class Login extends React.Component {
     }
   }
 
-  handleKeyPress = (e) => { if (e.key === 'Enter') this.attemptLogin() }
-
   render() {
     return (
       <div>
@@ -74,19 +87,23 @@ class Login extends React.Component {
           <h3 style={styles.header}>{STR.title_login}</h3>
           <div>
             <TextField
-              ref="username"
-              floatingLabelText={STR.label_login}
+              floatingLabelText={STR.label_username}
+              value={this.state.username}
               errorText={this.state.usernameError}
+              onChange={this.handleUsernameChange}
               onKeyPress={this.handleKeyPress}
+              ref="username"
             />
           </div>
           <div>
             <TextField
-              ref="password"
               type="password"
               floatingLabelText={STR.label_password}
+              value={this.state.password}
               errorText={this.state.passwordError}
+              onChange={this.handlePasswordChange}
               onKeyPress={this.handleKeyPress}
+              ref="password"
             />
           </div>
           { this.state.commonError !== '' ? <div><p style={{ color: red500, textAlign: 'center', marginBottom: 0 }}>{ this.state.commonError }</p></div> : null }

@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import NavigationDrawer from '../NavigationDrawer'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import { blueGrey500, blueGrey700,deepOrangeA200 } from 'material-ui/styles/colors'
 
@@ -12,10 +13,22 @@ const muiTheme = getMuiTheme({
 });
 
 class App extends React.Component {
+
+  openDrawer = () => this.refs.drawer.handleToggle()
+
   render() {
+    const childrenWithMenuIconHandler = React.Children.map(this.props.children,
+      (child) => React.cloneElement(child, {
+        onMenuIconClick: this.openDrawer
+      })
+    )
+
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
-        {this.props.children}
+        <div>
+          <NavigationDrawer ref="drawer" />
+          {childrenWithMenuIconHandler}
+        </div>
       </MuiThemeProvider>
     )
   }

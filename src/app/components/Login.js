@@ -16,14 +16,6 @@ var styles = {
   header: { marginTop: 0, marginBottom: 0 }
 }
 
-var initialState = { 
-  username: '', 
-  password: '', 
-  usernameError : '', 
-  passwordError : '', 
-  commonError: '' 
-}
-
 class Login extends React.Component {
 
   constructor() {

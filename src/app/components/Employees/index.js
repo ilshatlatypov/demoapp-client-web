@@ -1,15 +1,17 @@
 import React, {PropTypes} from 'react'
-import ToolbarExamplesSimple from '../ToolbarExamplesSimple'
+import ToolbarExamplesSimple from '../../ToolbarExamplesSimple'
 
 import Paper from 'material-ui/Paper'
 import {List, ListItem} from 'material-ui/List'
 import Divider from 'material-ui/Divider'
-import {red500} from 'material-ui/styles/colors';
-
 import CircularProgress from 'material-ui/CircularProgress'
+import {red500} from 'material-ui/styles/colors'
 
-import client from '../client'
-import STR from '../strings'
+import DialogCreateEmployee from './DialogCreateEmployee'
+import MySnackbar from './MySnackbar'
+
+import client from '../../client'
+import STR from '../../strings'
 
 const styles = {
   employeesCard: {
@@ -37,7 +39,9 @@ class Employees extends React.Component {
     this.state = {employees: [], requestInProgress: false}
   }
 
-  componentDidMount = () => {
+  componentDidMount = () => this.refresh()
+
+  refresh = () => {
     this.setState({requestInProgress: true})
     client({
       method: 'GET',
@@ -57,6 +61,11 @@ class Employees extends React.Component {
         })
       }
     )
+  }
+
+  handleUserCreate = () => {
+    this.refs.snackbar.handleRequestOpen()
+    this.refresh()
   }
 
   getEmployeesAsListItems = () =>
@@ -86,6 +95,8 @@ class Employees extends React.Component {
         <Paper style={styles.employeesCard}>
           {component}
         </Paper>
+        <DialogCreateEmployee onCreate={this.handleUserCreate}/>
+        <MySnackbar message={STR.prompt_employee_added} ref="snackbar"/>
       </div>
     )
   }

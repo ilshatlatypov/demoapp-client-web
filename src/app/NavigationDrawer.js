@@ -71,9 +71,8 @@ export default class NavigationDrawer extends React.Component {
         onRequestChange={(open) => this.setState({open})}
       >
         <SelectableList defaultValue={0}>
-          <ListItem containerElement={<Link to="/" />} value={0} primaryText={STR.title_home} leftIcon={<ContentPaste />} onTouchTap={this.handleClose} />
-          <ListItem containerElement={<Link to="/tasks" />} value={1} primaryText={STR.title_tasks} leftIcon={<ContentPaste />} onTouchTap={this.handleClose} />
-          <ListItem containerElement={<Link to="/employees" />} value={2} primaryText={STR.title_employees} leftIcon={<SocialPeople />} onTouchTap={this.handleClose} />
+          <ListItem containerElement={<Link to="/tasks" />} value={0} primaryText={STR.title_tasks} leftIcon={<ContentPaste />} onTouchTap={this.handleClose} />
+          <ListItem containerElement={<Link to="/employees" />} value={1} primaryText={STR.title_employees} leftIcon={<SocialPeople />} onTouchTap={this.handleClose} />
         </SelectableList>
         <Divider />
         <List>

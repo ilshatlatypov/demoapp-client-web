@@ -25,7 +25,6 @@ export default {
 	title_new_employee: "Новый сотрудник",
 	title_tasks: "Задачи",
 	title_employees: "Сотрудники",
-	title_home: "Главная",
 
 	prompt_employee_added: "Сотрудник добавлен",
 }

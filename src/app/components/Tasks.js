@@ -18,6 +18,15 @@ const styles = {
     margin: 24,
     marginLeft: 'auto',
     marginRight: 'auto'
+  },
+  errorCard: {
+    textAlign: 'center',
+    padding: 48,
+    color: red500
+  },
+  progressCard: {
+    textAlign: 'center',
+    padding: 48
   }
 }
 
@@ -66,9 +75,9 @@ class Tasks extends React.Component {
     if (!this.state.requestInProgress) {
       component = this.state.tasks ?
         <List>{this.getTasksAsListItems()}</List> :
-        <div style={{textAlign: 'center', padding: 48, color: red500}}>{STR.error_server_unavailable}</div>
+        <div style={styles.errorCard}>{STR.error_server_unavailable}</div>
     } else {
-      component = <div style={{textAlign: 'center', padding: 48}}><CircularProgress /></div>
+      component = <div style={styles.progressCard}><CircularProgress /></div>
     }
 
     return (

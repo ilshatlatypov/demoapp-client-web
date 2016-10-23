@@ -2,8 +2,8 @@ import React, {PropTypes} from 'react'
 import ToolbarExamplesSimple from '../../ToolbarExamplesSimple'
 
 import Paper from 'material-ui/Paper'
-import {List, ListItem} from 'material-ui/List'
-import Divider from 'material-ui/Divider'
+import {List} from 'material-ui/List'
+import Employee from './Employee'
 import CircularProgress from 'material-ui/CircularProgress'
 import {red500} from 'material-ui/styles/colors'
 
@@ -12,6 +12,9 @@ import MySnackbar from './MySnackbar'
 
 import client from '../../client'
 import STR from '../../strings'
+
+const username = window.localStorage.getItem('login')
+const password = window.localStorage.getItem('password')
 
 const styles = {
   employeesCard: {
@@ -36,7 +39,7 @@ class Employees extends React.Component {
 
   constructor() {
     super()
-    this.state = {employees: [], requestInProgress: false}
+    this.state = {employees: [], requestInProgress: false, snackbarMessage: ''}
   }
 
   componentDidMount = () => this.refresh()
@@ -46,8 +49,8 @@ class Employees extends React.Component {
     client({
       method: 'GET',
       path: 'http://localhost:8080/users?sort=firstname&sort=lastname',
-      username: window.localStorage.getItem('login'),
-      password: window.localStorage.getItem('password'),
+      username: username,
+      password: password,
     }).then(response => {
         this.setState({
           employees: response.entity._embedded.users,
@@ -63,24 +66,36 @@ class Employees extends React.Component {
     )
   }
 
-  handleUserCreate = () => {
+  getEmployees = () =>
+    this.state.employees.map(employee =>
+      <Employee key={employee._links.self.href} employee={employee} onDelete={this.handleDelete}/>
+    )
+
+  handleUserCreated = () => {
+    this.notifyAndRefresh(STR.prompt_employee_added)
+  }
+
+  handleDelete = (employee) =>
+  	client({
+      method: 'DELETE',
+      path: employee._links.self.href,
+      username: username,
+      password: password
+    }).then(response => {
+      this.notifyAndRefresh(STR.prompt_employee_deleted)
+  	})
+
+  notifyAndRefresh = (message) => {
+    this.setState({snackbarMessage: message})
     this.refs.snackbar.handleRequestOpen()
     this.refresh()
   }
-
-  getEmployeesAsListItems = () =>
-    this.state.employees.map(employee => {
-      return (<div key={employee._links.self.href} >
-        <ListItem primaryText={employee.firstname + " " + employee.lastname} />
-        <Divider />
-      </div>)
-    })
-
+    
   render() {
     var component
     if (!this.state.requestInProgress) {
       component = this.state.employees ?
-        <List>{this.getEmployeesAsListItems()}</List> :
+        <List>{this.getEmployees()}</List> :
         <div style={styles.errorCard}>{STR.error_server_unavailable}</div>
     } else {
       component = <div style={styles.progressCard}><CircularProgress /></div>
@@ -95,8 +110,8 @@ class Employees extends React.Component {
         <Paper style={styles.employeesCard}>
           {component}
         </Paper>
-        <DialogCreateEmployee onCreate={this.handleUserCreate}/>
-        <MySnackbar message={STR.prompt_employee_added} ref="snackbar"/>
+        <DialogCreateEmployee onCreate={this.handleUserCreated}/>
+        <MySnackbar message={this.state.snackbarMessage} ref="snackbar"/>
       </div>
     )
   }

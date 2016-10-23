@@ -19,6 +19,7 @@ export default {
 	action_logout: "Выйти",
 	action_cancel: "Отмена",
 	action_save: "Сохранить",
+	action_ok: "OK",
 
  	title_login: "Вход",
 	title_new_task: "Новая задача",
@@ -27,4 +28,6 @@ export default {
 	title_employees: "Сотрудники",
 
 	prompt_employee_added: "Сотрудник добавлен",
+	prompt_employee_deleted: "Сотрудник удален",
+	prompt_delete_employee: "Удалить сотрудника?"
 }

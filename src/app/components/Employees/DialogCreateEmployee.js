@@ -19,42 +19,60 @@ const styles = {
     bottom: 20,
     left: 'auto',
     position: 'fixed'
+  },
+  commonError: {
+    color: red500,
+    textAlign: 'center',
+    marginBottom: 0
   }
 }
 
 class DialogCreateEmployee extends React.Component {
   state = {
     open: false,
-    selectedRole: null,
+    firstname: '',
+    lastname: '',
+    login: '',
+    role: null,
     firstnameError: '',
     lastnameError: '',
     loginError: '',
     commonError: ''
   }
 
-  handleOpen = () => this.setState({open: true})
-
-  handleClose = () => {
+  handleOpen = () =>
     this.setState({
-      open: false,
-      selectedRole: null,
+      open: true,
+      firstname: '',
+      lastname: '',
+      login: '',
+      role: null,
       firstnameError: '',
       lastnameError: '',
       loginError: '',
       roleError: '',
       commonError: ''
     })
-  }
 
-  handleRoleSelectChange = (event, index, value) => this.setState({selectedRole: value})
+  handleClose = () => this.setState({open: false})
+
+  handleFirstnameChange = (e) => this.setState({firstname: e.target.value})
+
+  handleLastnameChange = (e) => this.setState({lastname: e.target.value})
+
+  handleLoginChange = (e) => this.setState({login: e.target.value})
+
+  handleRoleChange = (event, index, value) => this.setState({role: value})
+
+  handleKeyPress = (e) => { if (e.key === 'Enter') this.attemptCreateUser() }
 
   attemptCreateUser = () => {
     this.setState({ firstnameError: '', lastnameError: '', loginError: '', roleError: '', commonError: ''})
 
-    var firstname = this.refs.firstname.getValue()
-    var lastname = this.refs.lastname.getValue()
-    var login = this.refs.login.getValue()
-    var role = this.state.selectedRole
+    var firstname = this.state.firstname.trim()
+    var lastname = this.state.lastname.trim()
+    var login = this.state.login.trim()
+    var role = this.state.role
 
     var focusField
     if (role === null) {
@@ -78,33 +96,41 @@ class DialogCreateEmployee extends React.Component {
     }
 
     if (focusField) {
-      focusField.focus()
+      if (focusField instanceof TextField) {
+        focusField.focus()
+      }
     } else {
-      var newUser = { firstname: firstname, lastname: lastname, username: login, password: login, role: role }
-
-      client({method: 'POST',
-        path: 'http://localhost:8080/users',
-        headers: {'Content-Type': 'application/json'},
-        entity: newUser,
-        username: window.localStorage.getItem('login'),
-        password: window.localStorage.getItem('password'),
-      }).then(response => {
-          this.handleClose()
-          this.props.onCreate()
-        }, errorResponse => {
-          if (errorResponse.status.code == 400) {
-            var error = errorResponse.entity.errors[0]
-            if (error.property === 'username' && error.message === 'must be unique') {
-              this.setState({ loginError: STR.error_login_conflict})
-            }
-          } else if (errorResponse.status.code == 0) {
-            this.setState({commonError: STR.error_server_unavailable})
-          }
-        })
+      this.createUser({
+        firstname: firstname,
+        lastname: lastname,
+        username: login,
+        password: login,
+        role: role
+      })
     }
   }
 
-  handleKeyPress = (e) => { if (e.key === 'Enter') this.attemptCreateUser() }
+  createUser = (user) =>
+    client({method: 'POST',
+      path: 'http://localhost:8080/users',
+      headers: {'Content-Type': 'application/json'},
+      entity: user,
+      username: window.localStorage.getItem('login'),
+      password: window.localStorage.getItem('password'),
+    }).then(response => {
+        this.handleClose()
+        this.props.onCreate()
+      }, errorResponse => {
+        if (errorResponse.status.code == 400) {
+          var error = errorResponse.entity.errors[0]
+          if (error.property === 'username' && error.message === 'must be unique') {
+            this.setState({ loginError: STR.error_login_conflict})
+          }
+        } else if (errorResponse.status.code == 0) {
+          this.setState({commonError: STR.error_server_unavailable})
+        }
+      }
+    )
 
   render() {
     const actions = [
@@ -122,7 +148,8 @@ class DialogCreateEmployee extends React.Component {
 
     return (
       <div>
-        <FloatingActionButton secondary={true} style={styles.fab} onTouchTap={this.handleOpen}>
+        <FloatingActionButton
+          secondary={true} style={styles.fab} onTouchTap={this.handleOpen}>
           <ContentAdd />
         </FloatingActionButton>
         <Dialog
@@ -137,6 +164,8 @@ class DialogCreateEmployee extends React.Component {
             <TextField
               ref="firstname"
               floatingLabelText={STR.label_firstname}
+              value={this.state.firstname}
+              onChange={this.handleFirstnameChange}
               errorText={this.state.firstnameError}
               onKeyPress={this.handleKeyPress}
               autoFocus />
@@ -145,6 +174,8 @@ class DialogCreateEmployee extends React.Component {
             <TextField
               ref="lastname"
               floatingLabelText={STR.label_lastname}
+              value={this.state.lastname}
+              onChange={this.handleLastnameChange}
               errorText={this.state.lastnameError}
               onKeyPress={this.handleKeyPress} />
           </div>
@@ -152,6 +183,8 @@ class DialogCreateEmployee extends React.Component {
             <TextField
               ref="login"
               floatingLabelText={STR.label_username}
+              value={this.state.login}
+              onChange={this.handleLoginChange}
               errorText={this.state.loginError}
               onKeyPress={this.handleKeyPress} />
           </div>
@@ -160,13 +193,18 @@ class DialogCreateEmployee extends React.Component {
               ref="role"
               floatingLabelText={STR.label_role}
               errorText={this.state.roleError}
-              value={this.state.selectedRole}
-              onChange={this.handleRoleSelectChange} >
+              value={this.state.role}
+              onChange={this.handleRoleChange} >
               <MenuItem key={1} value="MANAGER" primaryText="Менеджер" />
               <MenuItem key={2} value="EMPLOYEE" primaryText="Сотрудник" />
             </SelectField>
           </div>
-          { this.state.commonError !== '' ? <div><p style={{ color: red500, textAlign: 'center', marginBottom: 0 }}>{ this.state.commonError }</p></div> : null }
+          {
+            this.state.commonError !== '' ?
+            <div>
+              <p style={style.commonError}>{ this.state.commonError }</p>
+            </div> : null
+          }
         </Dialog>
       </div>
     )

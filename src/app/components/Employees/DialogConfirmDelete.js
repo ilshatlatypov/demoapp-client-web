@@ -6,7 +6,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import STR from '../../strings'
 import client from '../../client'
 
-const progressDiameter = 70
+const progressDiameter = 40
 const dialogWidth = 304
 
 const styles = {
@@ -18,6 +18,7 @@ const styles = {
     backgroundColor: 'rgba(255,255,255,0.5)',
     position: 'absolute',
     top: 0,
+    bottom: 0,
     left: 0
   }
 }

@@ -12,7 +12,7 @@ import {red500} from 'material-ui/styles/colors'
 import STR from '../../strings'
 import client from '../../client'
 
-const progressDiameter = 70
+const progressDiameter = 40
 const dialogWidth = 304
 
 const styles = {
@@ -37,6 +37,7 @@ const styles = {
     backgroundColor: 'rgba(255,255,255,0.5)',
     position: 'absolute',
     top: 0,
+    bottom: 0,
     left: 0
   }
 }
@@ -96,11 +97,11 @@ class DialogCreateEmployee extends React.Component {
   handleKeyPress = (e) => { if (e.key === 'Enter') this.attemptCreateUser() }
 
   attemptCreateUser = () => {
-    this.setState({ firstnameError: '', lastnameError: '', loginError: '', roleError: '', commonError: ''})
-
     if (!this.state.progressPaddingsAreSet) {
       this.setPaddingsForProgress()
     }
+
+    this.setState({ firstnameError: '', lastnameError: '', loginError: '', roleError: '', commonError: ''})
 
     var firstname = this.state.firstname.trim()
     var lastname = this.state.lastname.trim()
@@ -172,7 +173,7 @@ class DialogCreateEmployee extends React.Component {
   setPaddingsForProgress = () => {
     // get dialog by className because id cannot be applied (bug in material ui)
     var dialogHeight =
-      document.getElementsByClassName("DialogCreateEmployee")[0].clientHeight
+      document.getElementsByClassName("dialogCreateEmployee")[0].clientHeight
     var progressPaddingHor = (dialogWidth - progressDiameter) / 2
     var progressPaddingVert = (dialogHeight - progressDiameter) / 2
 
@@ -207,7 +208,7 @@ class DialogCreateEmployee extends React.Component {
           <ContentAdd />
         </FloatingActionButton>
         <Dialog
-          contentClassName="DialogCreateEmployee"
+          contentClassName="dialogCreateEmployee"
           title={STR.title_new_employee}
           actions={actions}
           modal={true}
@@ -215,7 +216,7 @@ class DialogCreateEmployee extends React.Component {
           onRequestClose={this.handleClose}
           contentStyle={styles.content}
           autoScrollBodyContent={true}>
-          { this.state.requestInProgress ? <div style={styles.progress}><CircularProgress /></div> : null }
+          { this.state.requestInProgress ? <div style={styles.progress}><CircularProgress size={40}/></div> : null }
           <div>
             <TextField
               ref="firstname"

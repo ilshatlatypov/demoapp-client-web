@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import Drawer from 'material-ui/Drawer'
-import {List, ListItem, MakeSelectable} from 'material-ui/List'
+import {List, ListItem, makeSelectable} from 'material-ui/List'
 
 import Divider from 'material-ui/Divider'
 import ContentPaste from 'material-ui/svg-icons/content/content-paste'
@@ -11,7 +11,7 @@ import { Link } from 'react-router'
 
 import STR from './strings'
 
-let SelectableList = MakeSelectable(List);
+let SelectableList = makeSelectable(List);
 
 function wrapState(ComposedComponent) {
   return class SelectableList extends React.Component {

@@ -7,9 +7,13 @@ import SelectField from 'material-ui/SelectField'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import MenuItem from 'material-ui/MenuItem'
+import CircularProgress from 'material-ui/CircularProgress'
 import {red500} from 'material-ui/styles/colors'
 import STR from '../../strings'
 import client from '../../client'
+
+const progressDiameter = 70
+const dialogWidth = 304
 
 const styles = {
   fab: {
@@ -20,10 +24,20 @@ const styles = {
     left: 'auto',
     position: 'fixed'
   },
+  content: {
+    width: dialogWidth
+  },
   commonError: {
     color: red500,
     textAlign: 'center',
     marginBottom: 0
+  },
+  progress: {
+    zIndex: 2,
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    position: 'absolute',
+    top: 0,
+    left: 0
   }
 }
 
@@ -37,16 +51,31 @@ class DialogCreateEmployee extends React.Component {
     firstnameError: '',
     lastnameError: '',
     loginError: '',
-    commonError: ''
+    commonError: '',
+    requestInProgress: false,
+    progressPaddingsAreSet: false
   }
 
-  handleOpen = () =>
+  handleOpen = () => {
+    this.clearFields()
+    this.clearErrors()
     this.setState({
       open: true,
+      requestInProgress: false,
+      progressPaddingsAreSet: false
+    })
+  }
+
+  clearFields = () =>
+    this.setState({
       firstname: '',
       lastname: '',
       login: '',
       role: null,
+    })
+
+  clearErrors = () =>
+    this.setState({
       firstnameError: '',
       lastnameError: '',
       loginError: '',
@@ -68,6 +97,10 @@ class DialogCreateEmployee extends React.Component {
 
   attemptCreateUser = () => {
     this.setState({ firstnameError: '', lastnameError: '', loginError: '', roleError: '', commonError: ''})
+
+    if (!this.state.progressPaddingsAreSet) {
+      this.setPaddingsForProgress()
+    }
 
     var firstname = this.state.firstname.trim()
     var lastname = this.state.lastname.trim()
@@ -94,6 +127,7 @@ class DialogCreateEmployee extends React.Component {
       this.setState({ firstnameError: STR.error_required })
       focusField = this.refs.firstname
     }
+    this.forceUpdate()
 
     if (focusField) {
       if (focusField instanceof TextField) {
@@ -110,13 +144,14 @@ class DialogCreateEmployee extends React.Component {
     }
   }
 
-  createUser = (user) =>
+  createUser = (user) => {
+    this.setState({requestInProgress: true})
     client({method: 'POST',
       path: 'http://localhost:8080/users',
       headers: {'Content-Type': 'application/json'},
       entity: user,
       username: window.localStorage.getItem('login'),
-      password: window.localStorage.getItem('password'),
+      password: window.localStorage.getItem('password')
     }).then(response => {
         this.handleClose()
         this.props.onCreate()
@@ -124,13 +159,30 @@ class DialogCreateEmployee extends React.Component {
         if (errorResponse.status.code == 400) {
           var error = errorResponse.entity.errors[0]
           if (error.property === 'username' && error.message === 'must be unique') {
-            this.setState({ loginError: STR.error_login_conflict})
+            this.setState({loginError: STR.error_login_conflict})
           }
         } else if (errorResponse.status.code == 0) {
           this.setState({commonError: STR.error_server_unavailable})
         }
+        this.setState({requestInProgress: false})
       }
     )
+  }
+
+  setPaddingsForProgress = () => {
+    // get dialog by className because id cannot be applied (bug in material ui)
+    var dialogHeight =
+      document.getElementsByClassName("DialogCreateEmployee")[0].clientHeight
+    var progressPaddingHor = (dialogWidth - progressDiameter) / 2
+    var progressPaddingVert = (dialogHeight - progressDiameter) / 2
+
+    styles.progress.paddingLeft = progressPaddingHor
+    styles.progress.paddingRight = progressPaddingHor
+    styles.progress.paddingTop = progressPaddingVert
+    styles.progress.paddingBottom = progressPaddingVert
+
+    this.state.progressPaddingsAreSet = true
+  }
 
   render() {
     const actions = [
@@ -138,11 +190,13 @@ class DialogCreateEmployee extends React.Component {
         label={STR.action_cancel}
         primary={true}
         onTouchTap={this.handleClose}
+        disabled={this.state.requestInProgress}
       />,
       <FlatButton
         label={STR.action_save}
         primary={true}
         onTouchTap={this.attemptCreateUser}
+        disabled={this.state.requestInProgress}
       />,
     ]
 
@@ -153,13 +207,15 @@ class DialogCreateEmployee extends React.Component {
           <ContentAdd />
         </FloatingActionButton>
         <Dialog
+          contentClassName="DialogCreateEmployee"
           title={STR.title_new_employee}
           actions={actions}
-          modal={false}
+          modal={true}
           open={this.state.open}
           onRequestClose={this.handleClose}
-          contentStyle={{width: 304}}
+          contentStyle={styles.content}
           autoScrollBodyContent={true}>
+          { this.state.requestInProgress ? <div style={styles.progress}><CircularProgress /></div> : null }
           <div>
             <TextField
               ref="firstname"
@@ -168,6 +224,7 @@ class DialogCreateEmployee extends React.Component {
               onChange={this.handleFirstnameChange}
               errorText={this.state.firstnameError}
               onKeyPress={this.handleKeyPress}
+              disabled={this.state.requestInProgress}
               autoFocus />
           </div>
           <div>
@@ -177,7 +234,8 @@ class DialogCreateEmployee extends React.Component {
               value={this.state.lastname}
               onChange={this.handleLastnameChange}
               errorText={this.state.lastnameError}
-              onKeyPress={this.handleKeyPress} />
+              onKeyPress={this.handleKeyPress}
+              disabled={this.state.requestInProgress} />
           </div>
           <div>
             <TextField
@@ -186,7 +244,8 @@ class DialogCreateEmployee extends React.Component {
               value={this.state.login}
               onChange={this.handleLoginChange}
               errorText={this.state.loginError}
-              onKeyPress={this.handleKeyPress} />
+              onKeyPress={this.handleKeyPress}
+              disabled={this.state.requestInProgress}/>
           </div>
           <div>
             <SelectField
@@ -194,17 +253,13 @@ class DialogCreateEmployee extends React.Component {
               floatingLabelText={STR.label_role}
               errorText={this.state.roleError}
               value={this.state.role}
-              onChange={this.handleRoleChange} >
+              onChange={this.handleRoleChange}
+              disabled={this.state.requestInProgress}>
               <MenuItem key={1} value="MANAGER" primaryText="Менеджер" />
               <MenuItem key={2} value="EMPLOYEE" primaryText="Сотрудник" />
             </SelectField>
           </div>
-          {
-            this.state.commonError !== '' ?
-            <div>
-              <p style={style.commonError}>{ this.state.commonError }</p>
-            </div> : null
-          }
+          { this.state.commonError ? <div style={styles.commonError}>{this.state.commonError}</div> : null }
         </Dialog>
       </div>
     )

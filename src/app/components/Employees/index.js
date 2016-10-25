@@ -68,29 +68,23 @@ class Employees extends React.Component {
 
   getEmployees = () =>
     this.state.employees.map(employee =>
-      <Employee key={employee._links.self.href} employee={employee} onDelete={this.handleDelete}/>
+      <Employee key={employee._links.self.href} employee={employee} afterDelete={this.handleDeleted}/>
     )
 
   handleUserCreated = () => {
     this.notifyAndRefresh(STR.prompt_employee_added)
   }
 
-  handleDelete = (employee) =>
-  	client({
-      method: 'DELETE',
-      path: employee._links.self.href,
-      username: username,
-      password: password
-    }).then(response => {
-      this.notifyAndRefresh(STR.prompt_employee_deleted)
-  	})
+  handleDeleted = () => {
+    this.notifyAndRefresh(STR.prompt_employee_deleted)
+  }
 
   notifyAndRefresh = (message) => {
     this.setState({snackbarMessage: message})
     this.refs.snackbar.handleRequestOpen()
     this.refresh()
   }
-    
+
   render() {
     var component
     if (!this.state.requestInProgress) {

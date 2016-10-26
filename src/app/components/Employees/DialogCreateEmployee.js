@@ -13,7 +13,6 @@ import STR from '../../strings'
 import client from '../../client'
 
 const progressDiameter = 40
-const dialogWidth = 304
 
 const styles = {
   fab: {
@@ -25,7 +24,7 @@ const styles = {
     position: 'fixed'
   },
   content: {
-    width: dialogWidth
+    width: 304
   },
   commonError: {
     color: red500,
@@ -172,10 +171,9 @@ class DialogCreateEmployee extends React.Component {
 
   setPaddingsForProgress = () => {
     // get dialog by className because id cannot be applied (bug in material ui)
-    var dialogHeight =
-      document.getElementsByClassName("dialogCreateEmployee")[0].clientHeight
-    var progressPaddingHor = (dialogWidth - progressDiameter) / 2
-    var progressPaddingVert = (dialogHeight - progressDiameter) / 2
+    var dialog = document.getElementsByClassName("dialogCreateEmployee")[0]
+    var progressPaddingHor = (dialog.clientWidth - progressDiameter) / 2
+    var progressPaddingVert = (dialog.clientHeight - progressDiameter) / 2
 
     styles.progress.paddingLeft = progressPaddingHor
     styles.progress.paddingRight = progressPaddingHor

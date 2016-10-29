@@ -86,20 +86,11 @@ class Employees extends React.Component {
     this.refresh()
   }
 
-  render() {
-    var component
-    if (!this.state.requestInProgress) {
-      component = this.state.employees ?
-        <List>{this.getEmployees()}</List> :
-        <div style={styles.errorCard}>{STR.error_server_unavailable}</div>
-    } else {
-      component = <div style={styles.progressCard}><CircularProgress /></div>
-    }
-
-    component = <Table fixedHeader={true} multiSelectable={true}>
+  getEmployeesTable = () => {
+    return <Table fixedHeader={true} multiSelectable={true}>
       <TableHeader displaySelectAll={false}>
         <TableRow>
-          <TableHeaderColumn>Name</TableHeaderColumn>
+          <TableHeaderColumn>{STR.header_employee_name}</TableHeaderColumn>
           <TableHeaderColumn></TableHeaderColumn>
         </TableRow>
       </TableHeader>
@@ -107,6 +98,17 @@ class Employees extends React.Component {
         {this.getEmployees()}
       </TableBody>
     </Table>
+  }
+
+  render() {
+    var component
+    if (!this.state.requestInProgress) {
+      component = this.state.employees ?
+        this.getEmployeesTable() :
+        <div style={styles.errorCard}>{STR.error_server_unavailable}</div>
+    } else {
+      component = <div style={styles.progressCard}><CircularProgress /></div>
+    }
 
     return (
       <div>

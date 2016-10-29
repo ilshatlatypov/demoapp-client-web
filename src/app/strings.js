@@ -29,5 +29,7 @@ export default {
 
 	prompt_employee_added: "Сотрудник добавлен",
 	prompt_employee_deleted: "Сотрудник удален",
-	prompt_delete_employee: "Удалить сотрудника?"
+	prompt_delete_employee: "Удалить сотрудника?",
+
+	header_employee_name: "Имя сотрудника"
 }

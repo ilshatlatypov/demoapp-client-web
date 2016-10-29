@@ -24,10 +24,11 @@ export default {
  	title_login: "Вход",
 	title_new_task: "Новая задача",
 	title_new_employee: "Новый сотрудник",
+	title_edit_employee: "Изменение сотрудника",
 	title_tasks: "Задачи",
 	title_employees: "Сотрудники",
 
-	prompt_employee_added: "Сотрудник добавлен",
+	prompt_employee_saved: "Сотрудник сохранен",
 	prompt_employee_deleted: "Сотрудник удален",
 	prompt_delete_employee: "Удалить сотрудника?",
 

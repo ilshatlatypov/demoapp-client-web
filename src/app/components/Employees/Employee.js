@@ -31,11 +31,12 @@ export default class Employee extends React.Component {
 
   handleAfterDelete = () => this.props.afterDelete()
 
-  //handleRowHover = ()
+  stopPropagation = (e) => e.stopPropagation()
 
   render() {
     const {employee, ...otherProps} = this.props
     delete otherProps.afterDelete
+    delete otherProps.onEdit
 
     return (
       <PureTableRow {...otherProps}
@@ -49,12 +50,15 @@ export default class Employee extends React.Component {
           {
             this.state.displayActions ?
             <div>
-              <IconButton iconStyle={styles.actionIcons}>
+              <IconButton
+                iconStyle={styles.actionIcons}
+                onClick={this.stopPropagation}
+                onTouchTap={() => this.props.onEdit(this.props.employee)}>
                 <EditorModeEdit />
               </IconButton>
               <IconButton
                 iconStyle={styles.actionIcons}
-                onClick={(e) => e.stopPropagation()}
+                onClick={this.stopPropagation}
                 onTouchTap={this.askForDeleteConfirmation}>
                 <ActionDelete />
               </IconButton>

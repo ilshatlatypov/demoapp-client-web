@@ -8,16 +8,27 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {red500} from 'material-ui/styles/colors'
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table'
 
-import DialogCreateEmployee from './DialogCreateEmployee'
+import DialogEmployee from './DialogEmployee'
 import MySnackbar from './MySnackbar'
 
 import client from '../../client'
 import STR from '../../strings'
 
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import ContentAdd from 'material-ui/svg-icons/content/add'
+
 const username = window.localStorage.getItem('login')
 const password = window.localStorage.getItem('password')
 
 const styles = {
+  fab: {
+    margin: 0,
+    top: 'auto',
+    right: 20,
+    bottom: 20,
+    left: 'auto',
+    position: 'fixed'
+  },
   employeesCard: {
     width: '70%',
     maxWidth: 1200,
@@ -67,13 +78,8 @@ class Employees extends React.Component {
     )
   }
 
-  getEmployees = () =>
-    this.state.employees.map(employee =>
-      <Employee key={employee._links.self.href} employee={employee} afterDelete={this.handleDeleted}/>
-    )
-
-  handleUserCreated = () => {
-    this.notifyAndRefresh(STR.prompt_employee_added)
+  handleUserSaved = () => {
+    this.notifyAndRefresh(STR.prompt_employee_saved)
   }
 
   handleDeleted = () => {
@@ -100,6 +106,20 @@ class Employees extends React.Component {
     </Table>
   }
 
+  getEmployees = () =>
+    this.state.employees.map(employee =>
+      <Employee
+        key={employee._links.self.href}
+        employee={employee}
+        onEdit={this.handleOnEdit}
+        afterDelete={this.handleDeleted}
+      />
+    )
+
+  handleOnEdit = (employee) => this.refs.dialogCreateEmployee.handleOpen(employee)
+
+  handleOnCreate = () => this.refs.dialogCreateEmployee.handleOpen()
+
   render() {
     var component
     if (!this.state.requestInProgress) {
@@ -119,7 +139,13 @@ class Employees extends React.Component {
         <Paper style={styles.employeesCard}>
           {component}
         </Paper>
-        <DialogCreateEmployee onCreate={this.handleUserCreated}/>
+        <FloatingActionButton
+          secondary={true}
+          style={styles.fab}
+          onTouchTap={this.handleOnCreate}>
+          <ContentAdd />
+        </FloatingActionButton>
+        <DialogEmployee onSave={this.handleUserSaved} ref="dialogCreateEmployee"/>
         <MySnackbar message={this.state.snackbarMessage} ref="snackbar"/>
       </div>
     )

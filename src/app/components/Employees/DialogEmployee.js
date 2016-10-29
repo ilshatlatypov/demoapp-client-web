@@ -4,8 +4,6 @@ import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
 import SelectField from 'material-ui/SelectField'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
-import ContentAdd from 'material-ui/svg-icons/content/add'
 import MenuItem from 'material-ui/MenuItem'
 import CircularProgress from 'material-ui/CircularProgress'
 import {red500} from 'material-ui/styles/colors'
@@ -15,14 +13,6 @@ import client from '../../client'
 const progressDiameter = 40
 
 const styles = {
-  fab: {
-    margin: 0,
-    top: 'auto',
-    right: 20,
-    bottom: 20,
-    left: 'auto',
-    position: 'fixed'
-  },
   content: {
     width: 304
   },
@@ -41,9 +31,11 @@ const styles = {
   }
 }
 
-class DialogCreateEmployee extends React.Component {
+class DialogEmployee extends React.Component {
   state = {
     open: false,
+    title: STR.title_new_employee,
+    id: null,
     firstname: '',
     lastname: '',
     login: '',
@@ -56,7 +48,7 @@ class DialogCreateEmployee extends React.Component {
     progressPaddingsAreSet: false
   }
 
-  handleOpen = () => {
+  handleOpen = (employee) => {
     this.clearFields()
     this.clearErrors()
     this.setState({
@@ -64,10 +56,21 @@ class DialogCreateEmployee extends React.Component {
       requestInProgress: false,
       progressPaddingsAreSet: false
     })
+    if (employee) {
+      this.setState({
+        title: STR.title_edit_employee,
+        id: employee.id,
+        firstname: employee.firstname,
+        lastname:employee.lastname,
+        login: employee.username,
+        role: employee.role
+      })
+    }
   }
 
   clearFields = () =>
     this.setState({
+      id: null,
       firstname: '',
       lastname: '',
       login: '',
@@ -93,15 +96,16 @@ class DialogCreateEmployee extends React.Component {
 
   handleRoleChange = (event, index, value) => this.setState({role: value})
 
-  handleKeyPress = (e) => { if (e.key === 'Enter') this.attemptCreateUser() }
+  handleKeyPress = (e) => { if (e.key === 'Enter') this.attemptSaveEmployee() }
 
-  attemptCreateUser = () => {
+  attemptSaveEmployee = () => {
     if (!this.state.progressPaddingsAreSet) {
       this.setPaddingsForProgress()
     }
 
-    this.setState({ firstnameError: '', lastnameError: '', loginError: '', roleError: '', commonError: ''})
+    this.clearErrors()
 
+    var id = this.state.id
     var firstname = this.state.firstname.trim()
     var lastname = this.state.lastname.trim()
     var login = this.state.login.trim()
@@ -134,7 +138,8 @@ class DialogCreateEmployee extends React.Component {
         focusField.focus()
       }
     } else {
-      this.createUser({
+      this.saveEmployee({
+        id: id,
         firstname: firstname,
         lastname: lastname,
         username: login,
@@ -144,17 +149,25 @@ class DialogCreateEmployee extends React.Component {
     }
   }
 
-  createUser = (user) => {
+  saveEmployee = (employee) => {
+    var path = 'http://localhost:8080/users'
+    var method = 'POST'
+    if (employee.id) {
+      path += '/' + employee.id
+      method = 'PUT'
+    }
+
     this.setState({requestInProgress: true})
-    client({method: 'POST',
-      path: 'http://localhost:8080/users',
+    client({
+      method: method,
+      path: path,
       headers: {'Content-Type': 'application/json'},
-      entity: user,
+      entity: employee,
       username: window.localStorage.getItem('login'),
       password: window.localStorage.getItem('password')
     }).then(response => {
         this.handleClose()
-        this.props.onCreate()
+        this.props.onSave()
       }, errorResponse => {
         if (errorResponse.status.code == 400) {
           var error = errorResponse.entity.errors[0]
@@ -194,20 +207,16 @@ class DialogCreateEmployee extends React.Component {
       <FlatButton
         label={STR.action_save}
         primary={true}
-        onTouchTap={this.attemptCreateUser}
+        onTouchTap={this.attemptSaveEmployee}
         disabled={this.state.requestInProgress}
       />,
     ]
 
     return (
       <div>
-        <FloatingActionButton
-          secondary={true} style={styles.fab} onTouchTap={this.handleOpen}>
-          <ContentAdd />
-        </FloatingActionButton>
         <Dialog
           contentClassName="dialogCreateEmployee"
-          title={STR.title_new_employee}
+          title={this.state.title}
           actions={actions}
           modal={true}
           open={this.state.open}
@@ -265,4 +274,4 @@ class DialogCreateEmployee extends React.Component {
   }
 }
 
-export default DialogCreateEmployee
+export default DialogEmployee

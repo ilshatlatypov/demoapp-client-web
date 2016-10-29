@@ -6,6 +6,7 @@ import {List} from 'material-ui/List'
 import Employee from './Employee'
 import CircularProgress from 'material-ui/CircularProgress'
 import {red500} from 'material-ui/styles/colors'
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table'
 
 import DialogCreateEmployee from './DialogCreateEmployee'
 import MySnackbar from './MySnackbar'
@@ -94,6 +95,18 @@ class Employees extends React.Component {
     } else {
       component = <div style={styles.progressCard}><CircularProgress /></div>
     }
+
+    component = <Table fixedHeader={true} multiSelectable={true}>
+      <TableHeader displaySelectAll={false}>
+        <TableRow>
+          <TableHeaderColumn>Name</TableHeaderColumn>
+          <TableHeaderColumn></TableHeaderColumn>
+        </TableRow>
+      </TableHeader>
+      <TableBody showRowHover={true}>
+        {this.getEmployees()}
+      </TableBody>
+    </Table>
 
     return (
       <div>

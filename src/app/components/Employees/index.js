@@ -134,7 +134,7 @@ class Employees extends React.Component {
       <div>
         <ToolbarExamplesSimple
           title={STR.title_employees}
-          onMenuIconButtonTouchTap={this.props.onMenuIconClick}
+          onMenuIconButtonTouchTap={this.props.onMenuIconTouchTap}
         />
         <Paper style={styles.employeesCard}>
           {component}

@@ -19,7 +19,7 @@ class App extends React.Component {
   render() {
     const childrenWithMenuIconHandler = React.Children.map(this.props.children,
       (child) => React.cloneElement(child, {
-        onMenuIconClick: this.openDrawer
+        onMenuIconTouchTap: this.openDrawer
       })
     )
 

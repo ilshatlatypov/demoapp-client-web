@@ -59,7 +59,7 @@ class ToolbarExamplesSimple extends React.Component {
       <Toolbar style={styles.root}>
 
         <ToolbarGroup firstChild={true}>
-          <IconButton style={styles.iconButtonLeftStyle} iconStyle={styles.iconButtonIconStyle} onClick={this.props.onMenuIconButtonTouchTap}>
+          <IconButton style={styles.iconButtonLeftStyle} iconStyle={styles.iconButtonIconStyle} onTouchTap={this.props.onMenuIconButtonTouchTap}>
             <NavigationMenu />
           </IconButton>
           <h1 style={styles.title}>{this.props.title}</h1>

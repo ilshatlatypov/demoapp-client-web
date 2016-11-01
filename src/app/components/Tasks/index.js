@@ -136,7 +136,7 @@ class Tasks extends React.Component {
       <div>
         <ToolbarExamplesSimple
           title={STR.title_tasks}
-          onMenuIconButtonTouchTap={this.props.onMenuIconClick}
+          onMenuIconButtonTouchTap={this.props.onMenuIconTouchTap}
         />
         <Paper style={styles.tasksCard}>
           {component}

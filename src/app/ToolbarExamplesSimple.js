@@ -65,22 +65,6 @@ class ToolbarExamplesSimple extends React.Component {
           <h1 style={styles.title}>{this.props.title}</h1>
         </ToolbarGroup>
 
-        <ToolbarGroup>
-          <IconMenu
-            iconButtonElement={
-              <IconButton style={styles.iconButtonRightStyle} iconStyle={styles.iconButtonIconStyle}>
-                <MoreVertIcon />
-              </IconButton>
-            }
-            targetOrigin={{horizontal: 'right', vertical: 'top'}}
-            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-            >
-            <MenuItem primaryText="Refresh" />
-            <MenuItem primaryText="Help" />
-            <MenuItem primaryText="Sign out" />
-          </IconMenu>
-        </ToolbarGroup>
-
       </Toolbar>
     );
   }

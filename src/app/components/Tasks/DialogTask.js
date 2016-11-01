@@ -76,12 +76,14 @@ class DialogTask extends React.Component {
       progressPaddingsAreSet: false
     })
     if (task) {
+      var dateParts = task.date.split("-");
+      var date = new Date(dateParts[0], (dateParts[1] - 1), dateParts[2]);
       this.setState({
         dialogTitle: STR.title_edit_task,
         id: task.id,
         title: task.title,
-        date: task.date,
-        assignee: task.user
+        date: date,
+        assignee: task.user.id
       })
     }
   }

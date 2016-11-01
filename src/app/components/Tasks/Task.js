@@ -22,7 +22,7 @@ const styles = {
   }
 }
 
-export default class Employee extends React.Component {
+export default class Task extends React.Component {
   state = {displayActions: false}
 
   handleMouseEnter = () => this.setState({displayActions: true})
@@ -36,16 +36,20 @@ export default class Employee extends React.Component {
   stopPropagation = (e) => e.stopPropagation()
 
   render() {
-    const {employee, afterDelete, onEdit, ...otherProps} = this.props
+    const {task, afterDelete, onEdit, ...otherProps} = this.props
+    var owner = task.user
+    var ownerFullname
+    if (owner) {
+      ownerFullname = owner.firstname + ' ' + owner.lastname
+    }
 
     return (
       <PureTableRow {...otherProps}
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}>
         {otherProps.children[0]}
-        <TableRowColumn>
-          {employee.firstname + " " + employee.lastname}
-        </TableRowColumn>
+        <TableRowColumn>{task.title}</TableRowColumn>
+        <TableRowColumn>{ownerFullname}</TableRowColumn>
         <TableRowColumn style={styles.actionsColumn}>
           {
             this.state.displayActions ?
@@ -53,7 +57,7 @@ export default class Employee extends React.Component {
               <IconButton
                 iconStyle={styles.actionIcons}
                 onClick={this.stopPropagation}
-                onTouchTap={() => this.props.onEdit(employee)}>
+                onTouchTap={() => this.props.onEdit(task)}>
                 <EditorModeEdit />
               </IconButton>
               <IconButton
@@ -67,8 +71,8 @@ export default class Employee extends React.Component {
           }
         </TableRowColumn>
         <DialogConfirmDelete
-          toDelete={employee}
-          message={STR.prompt_delete_employee}
+          toDelete={task}
+          message={STR.prompt_delete_task}
           afterDelete={this.handleAfterDelete}
           ref="dialogConfirmDelete"
         />

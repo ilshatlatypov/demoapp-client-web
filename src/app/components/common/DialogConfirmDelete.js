@@ -81,7 +81,7 @@ export default class DialogConfirmDelete extends React.Component {
         contentClassName="dialogDeleteEmployee"
       >
         { this.state.requestInProgress ? <div style={styles.progress}><CircularProgress /></div> : null }
-        {STR.prompt_delete_employee}
+        {this.props.message}
       </Dialog>
     )
   }

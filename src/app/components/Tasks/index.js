@@ -3,12 +3,12 @@ import ToolbarExamplesSimple from '../../ToolbarExamplesSimple'
 
 import Paper from 'material-ui/Paper'
 import {List} from 'material-ui/List'
-import Employee from './Employee'
+import Task from './Task'
 import CircularProgress from 'material-ui/CircularProgress'
 import {red500} from 'material-ui/styles/colors'
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow} from 'material-ui/Table'
 
-import DialogEmployee from './DialogEmployee'
+import DialogTask from './DialogTask'
 import MySnackbar from '../common/MySnackbar'
 
 import client from '../../client'
@@ -29,7 +29,7 @@ const styles = {
     left: 'auto',
     position: 'fixed'
   },
-  employeesCard: {
+  tasksCard: {
     width: '70%',
     maxWidth: 1200,
     margin: 24,
@@ -47,11 +47,11 @@ const styles = {
   }
 }
 
-class Employees extends React.Component {
+class Tasks extends React.Component {
 
   constructor() {
     super()
-    this.state = {employees: [], requestInProgress: false, snackbarMessage: ''}
+    this.state = {tasks: [], requestInProgress: false, snackbarMessage: ''}
   }
 
   componentDidMount = () => this.refresh()
@@ -60,18 +60,18 @@ class Employees extends React.Component {
     this.setState({requestInProgress: true})
     client({
       method: 'GET',
-      path: 'http://localhost:8080/users?sort=firstname&sort=lastname',
+      path: 'http://localhost:8080/tasks?projection=withUser&sort=date',
       username: username,
       password: password,
     }).then(response => {
         this.setState({
-          employees: response.entity._embedded.users,
+          tasks: response.entity._embedded.tasks,
           requestInProgress: false
         })
       }, errorResponse => {
         console.log(errorResponse)
         this.setState({
-          employees: null,
+          tasks: null,
           requestInProgress: false
         })
       }
@@ -79,11 +79,11 @@ class Employees extends React.Component {
   }
 
   handleUserSaved = () => {
-    this.notifyAndRefresh(STR.prompt_employee_saved)
+    this.notifyAndRefresh(STR.prompt_task_saved)
   }
 
   handleDeleted = () => {
-    this.notifyAndRefresh(STR.prompt_employee_deleted)
+    this.notifyAndRefresh(STR.prompt_task_deleted)
   }
 
   notifyAndRefresh = (message) => {
@@ -92,39 +92,40 @@ class Employees extends React.Component {
     this.refresh()
   }
 
-  getEmployeesTable = () => {
+  getTasksTable = () => {
     return <Table fixedHeader={true} multiSelectable={true}>
       <TableHeader displaySelectAll={false}>
         <TableRow>
-          <TableHeaderColumn>{STR.header_employee_name}</TableHeaderColumn>
-          <TableHeaderColumn></TableHeaderColumn>
+          <TableHeaderColumn>{STR.header_task_title}</TableHeaderColumn>
+          <TableHeaderColumn>{STR.header_task_owner}</TableHeaderColumn>
+          <TableHeaderColumn style={{width: 96, paddingLeft: 12, paddingRight: 12}}></TableHeaderColumn>
         </TableRow>
       </TableHeader>
       <TableBody showRowHover={true}>
-        {this.getEmployees()}
+        {this.getTasks()}
       </TableBody>
     </Table>
   }
 
-  getEmployees = () =>
-    this.state.employees.map(employee =>
-      <Employee
-        key={employee._links.self.href}
-        employee={employee}
+  getTasks = () =>
+    this.state.tasks.map(task =>
+      <Task
+        key={task._links.self.href}
+        task={task}
         onEdit={this.handleOnEdit}
         afterDelete={this.handleDeleted}
       />
     )
 
-  handleOnEdit = (employee) => this.refs.dialogCreateEmployee.handleOpen(employee)
+  handleOnEdit = (employee) => this.refs.dialogTask.handleOpen(employee)
 
-  handleOnCreate = () => this.refs.dialogCreateEmployee.handleOpen()
+  handleOnCreate = () => this.refs.dialogTask.handleOpen()
 
   render() {
     var component
     if (!this.state.requestInProgress) {
-      component = this.state.employees ?
-        this.getEmployeesTable() :
+      component = this.state.tasks ?
+        this.getTasksTable() :
         <div style={styles.errorCard}>{STR.error_server_unavailable}</div>
     } else {
       component = <div style={styles.progressCard}><CircularProgress /></div>
@@ -133,10 +134,10 @@ class Employees extends React.Component {
     return (
       <div>
         <ToolbarExamplesSimple
-          title={STR.title_employees}
+          title={STR.title_tasks}
           onMenuIconButtonTouchTap={this.props.onMenuIconClick}
         />
-        <Paper style={styles.employeesCard}>
+        <Paper style={styles.tasksCard}>
           {component}
         </Paper>
         <FloatingActionButton
@@ -145,11 +146,11 @@ class Employees extends React.Component {
           onTouchTap={this.handleOnCreate}>
           <ContentAdd />
         </FloatingActionButton>
-        <DialogEmployee onSave={this.handleUserSaved} ref="dialogCreateEmployee"/>
+        <DialogTask onSave={this.handleUserSaved} ref="dialogTask"/>
         <MySnackbar message={this.state.snackbarMessage} ref="snackbar"/>
       </div>
     )
   }
 }
 
-export default Employees
+export default Tasks

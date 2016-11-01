@@ -14,6 +14,8 @@ export default {
 	label_firstname: "Имя",
 	label_lastname: "Фамилия",
 	label_role: "Должность",
+	label_title: "Название",
+	label_date: "Дата",
 
 	action_login: "Войти",
 	action_logout: "Выйти",
@@ -23,6 +25,7 @@ export default {
 
  	title_login: "Вход",
 	title_new_task: "Новая задача",
+	title_edit_task: "Новая задача",
 	title_new_employee: "Новый сотрудник",
 	title_edit_employee: "Изменение сотрудника",
 	title_tasks: "Задачи",
@@ -32,5 +35,11 @@ export default {
 	prompt_employee_deleted: "Сотрудник удален",
 	prompt_delete_employee: "Удалить сотрудника?",
 
-	header_employee_name: "Имя сотрудника"
+	prompt_task_saved: "Задача сохранена",
+	prompt_task_deleted: "Задача удалена",
+	prompt_delete_task: "Удалить задачу?",
+
+	header_employee_name: "Имя сотрудника",
+	header_task_title: "Название",
+	header_task_owner: "Исполнитель"
 }

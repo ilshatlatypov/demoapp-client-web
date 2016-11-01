@@ -42,5 +42,6 @@ export default {
 
 	header_employee_name: "Имя сотрудника",
 	header_task_title: "Название",
-	header_task_owner: "Исполнитель"
+	header_task_owner: "Исполнитель",
+	header_task_date: "Дата"
 }

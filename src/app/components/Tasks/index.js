@@ -97,6 +97,7 @@ class Tasks extends React.Component {
       <TableHeader displaySelectAll={false}>
         <TableRow>
           <TableHeaderColumn>{STR.header_task_title}</TableHeaderColumn>
+          <TableHeaderColumn>{STR.header_task_date}</TableHeaderColumn>
           <TableHeaderColumn>{STR.header_task_owner}</TableHeaderColumn>
           <TableHeaderColumn style={{width: 96, paddingLeft: 12, paddingRight: 12}}></TableHeaderColumn>
         </TableRow>

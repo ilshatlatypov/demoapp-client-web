@@ -43,12 +43,17 @@ export default class Task extends React.Component {
       ownerFullname = owner.firstname + ' ' + owner.lastname
     }
 
+    var dateParts = task.date.split("-");
+    var date = new Date(dateParts[0], (dateParts[1] - 1), dateParts[2]);
+    var formattedDate = new global.Intl.DateTimeFormat('ru-RU', {day: 'numeric', month: 'long', year: 'numeric'}).format(date)
+
     return (
       <PureTableRow {...otherProps}
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}>
         {otherProps.children[0]}
         <TableRowColumn>{task.title}</TableRowColumn>
+        <TableRowColumn>{formattedDate}</TableRowColumn>
         <TableRowColumn>{ownerFullname}</TableRowColumn>
         <TableRowColumn style={styles.actionsColumn}>
           {

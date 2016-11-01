@@ -16,6 +16,7 @@ export default {
 	label_role: "Должность",
 	label_title: "Название",
 	label_date: "Дата",
+	label_assignee: "Исполнитель",
 
 	action_login: "Войти",
 	action_logout: "Выйти",

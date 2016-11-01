@@ -11,6 +11,9 @@ import {red500} from 'material-ui/styles/colors'
 import STR from '../../strings'
 import client from '../../client'
 
+const username = window.localStorage.getItem('login')
+const password = window.localStorage.getItem('password')
+
 const progressDiameter = 40
 
 const styles = {
@@ -39,13 +42,29 @@ class DialogTask extends React.Component {
     id: null,
     title: '',
     date: null,
-    role: null,
+    assignee: null,
     titleError: '',
     dateError: '',
-    roleErrro: '',
+    assigneeError: '',
     commonError: '',
     requestInProgress: false,
-    progressPaddingsAreSet: false
+    progressPaddingsAreSet: false,
+    employees: []
+  }
+
+  componentDidMount = () => {
+    client({
+      method: 'GET',
+      path: 'http://localhost:8080/users?sort=firstname&sort=lastname',
+      username: username,
+      password: password,
+    }).then(response => {
+        this.setState({employees: response.entity._embedded.users})
+      }, errorResponse => {
+        console.log(errorResponse)
+        this.setState({employees: null})
+      }
+    )
   }
 
   handleOpen = (task) => {
@@ -62,7 +81,7 @@ class DialogTask extends React.Component {
         id: task.id,
         title: task.title,
         date: task.date,
-        role: task.role
+        assignee: task.user
       })
     }
   }
@@ -72,14 +91,14 @@ class DialogTask extends React.Component {
       id: null,
       title: '',
       date: null,
-      role: null,
+      assignee: null,
     })
 
   clearErrors = () =>
     this.setState({
       titleError: '',
       dateError: '',
-      roleError: '',
+      assigneeError: '',
       commonError: ''
     })
 
@@ -89,7 +108,7 @@ class DialogTask extends React.Component {
 
   handleDateChange = (event, value) => this.setState({date: value})
 
-  handleRoleChange = (event, index, value) => this.setState({role: value})
+  handleAssigneeChange = (event, index, value) => this.setState({assignee: value})
 
   handleKeyPress = (e) => { if (e.key === 'Enter') this.attemptSaveTask() }
 
@@ -103,7 +122,7 @@ class DialogTask extends React.Component {
     var id = this.state.id
     var title = this.state.title.trim()
     var date = this.state.date
-    var role = this.state.role
+    var assignee = this.state.assignee
 
     var focusField
     if (date == null) {
@@ -121,11 +140,12 @@ class DialogTask extends React.Component {
         focusField.focus()
       }
     } else {
+      var formattedDate = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + (date.getDate() > 9 ? date.getDate() : "0" + date.getDate())
       this.saveTask({
         id: id,
         title: title,
-        date: date,
-        role: role
+        date: formattedDate,
+        user: "/" + assignee
       })
     }
   }
@@ -194,6 +214,13 @@ class DialogTask extends React.Component {
       />,
     ]
 
+    var employees = []
+    if (this.state.employees) {
+      employees = this.state.employees.map(employee =>
+        <MenuItem key={employee.id} value={employee.id} primaryText={employee.firstname + ' ' + employee.lastname} />
+      )
+    }
+
     return (
       <div>
         <Dialog
@@ -224,20 +251,21 @@ class DialogTask extends React.Component {
               value={this.state.date}
               onChange={this.handleDateChange}
               minDate={new Date()}
+              errorText={this.state.dateError}
               locale="ru" DateTimeFormat={global.Intl.DateTimeFormat}
               cancelLabel={STR.action_cancel}
               disabled={this.state.requestInProgress} />
           </div>
           <div>
             <SelectField
-              ref="role"
-              floatingLabelText={STR.label_role}
-              errorText={this.state.roleError}
-              value={this.state.role}
-              onChange={this.handleRoleChange}
-              disabled={this.state.requestInProgress}>
-              <MenuItem key={1} value="MANAGER" primaryText="Менеджер" />
-              <MenuItem key={2} value="EMPLOYEE" primaryText="Сотрудник" />
+              ref="assignee"
+              floatingLabelText={STR.label_assignee}
+              errorText={this.state.assigneeError}
+              value={this.state.assignee}
+              onChange={this.handleAssigneeChange}
+              disabled={this.state.requestInProgress}
+              maxHeight={300}>
+              {employees}
             </SelectField>
           </div>
           { this.state.commonError ? <div style={styles.commonError}>{this.state.commonError}</div> : null }

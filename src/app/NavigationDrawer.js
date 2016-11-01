@@ -63,14 +63,23 @@ export default class NavigationDrawer extends React.Component {
     this.handleClose()
   }
 
+  getSelected = (path) => {
+    if (path === '/tasks') {
+      return 0
+    } else if (path === '/employees') {
+      return 1
+    }
+  }
+
   render() {
+    var selected = this.getSelected(this.props.currentPath)
     return (
       <Drawer
         docked={false}
         open={this.state.open}
         onRequestChange={(open) => this.setState({open})}
       >
-        <SelectableList defaultValue={0}>
+        <SelectableList defaultValue={selected}>
           <ListItem containerElement={<Link to="/tasks" />} value={0} primaryText={STR.title_tasks} leftIcon={<ContentPaste />} onTouchTap={this.handleClose} />
           <ListItem containerElement={<Link to="/employees" />} value={1} primaryText={STR.title_employees} leftIcon={<SocialPeople />} onTouchTap={this.handleClose} />
         </SelectableList>

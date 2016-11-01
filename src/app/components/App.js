@@ -3,6 +3,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import NavigationDrawer from '../NavigationDrawer'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import { blueGrey500, blueGrey700,deepOrangeA200 } from 'material-ui/styles/colors'
+import { RouteHandler } from 'react-router'
 
 const muiTheme = getMuiTheme({
   palette: {
@@ -23,10 +24,13 @@ class App extends React.Component {
       })
     )
 
+    var routes = this.props.routes
+    var currentPath = routes[routes.length - 1].path
+
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
         <div>
-          <NavigationDrawer ref="drawer" />
+          <NavigationDrawer ref="drawer" currentPath={currentPath}/>
           {childrenWithMenuIconHandler}
         </div>
       </MuiThemeProvider>
